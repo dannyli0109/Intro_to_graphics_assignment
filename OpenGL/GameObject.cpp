@@ -10,6 +10,15 @@ GameObject::GameObject(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 
 void GameObject::Update(float deltaTime)
 {
+	for (Component* component : components)
+	{
+		component->Update(deltaTime);
+	}
+
+	for (GameObject* child : children)
+	{
+		child->Update(deltaTime);
+	}
 }
 
 void GameObject::Draw()

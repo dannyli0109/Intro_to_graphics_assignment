@@ -15,7 +15,7 @@ uniform sampler2D normalTexture;
 
 // diffuse
 in vec4 WorldPos;
-in vec4 MeshNormal;
+// in vec4 MeshNormal;
 
 // point light
 uniform vec3 lightPositions[16];
@@ -94,6 +94,5 @@ void main()
 	}
 	vec4 ambientTerm = calculateAmbientLighting();
 	result += ambientTerm;
-	
 	FragColor = result;
 }

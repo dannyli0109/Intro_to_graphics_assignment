@@ -34,7 +34,6 @@ int main(void)
 
 		Mesh mesh("soulspear/soulspear.obj");
 
-
 		Texture diffuseTexture("soulspear\\soulspear_diffuse.tga");
 		program.SetUniform("diffuseTexture", 0);
 		Texture SpecularTexture("soulspear\\soulspear_specular.tga");
@@ -62,23 +61,6 @@ int main(void)
 		
 		while (!glfwWindowShouldClose(window->Get()))
 		{
-			//glm::vec3 pointLightPos = pointLight.GetPosition();
-			//if (glfwGetKey(window->Get(), GLFW_KEY_W) == GLFW_PRESS)
-			//{
-			//	lightCube.Translate(0, 0.1f, 0);
-			//}
-			//if (glfwGetKey(window->Get(), GLFW_KEY_S) == GLFW_PRESS)
-			//{
-			//	lightCube.Translate(0, -0.1f, 0);
-			//}
-			//if (glfwGetKey(window->Get(), GLFW_KEY_A) == GLFW_PRESS)
-			//{
-			//	lightCube.Translate(-0.1f, 0, 0);
-			//}
-			//if (glfwGetKey(window->Get(), GLFW_KEY_D) == GLFW_PRESS)
-			//{
-			//	lightCube.Translate(0.1f, 0, 0);
-			//}
 			float deltaTime = glfwGetTime() - time;
 			time = glfwGetTime();
 			// pointLight.SetPosition(lightCube.position.x, lightCube.position.y, lightCube.position.z);
@@ -127,7 +109,7 @@ int main(void)
 			program.SetUniform("viewMatrix", cameraViewMatrix);
 			program.SetUniform("projectionMatrix", cameraProjectionMatrix);
 			
-			soulSpear.RotateY(glfwGetTime());
+			//soulSpear.RotateY(glfwGetTime());
 			program.SetUniform("modelMatrix", soulSpear.GetModelMatrix());
 			mesh.Bind();
 			diffuseTexture.Bind(0);

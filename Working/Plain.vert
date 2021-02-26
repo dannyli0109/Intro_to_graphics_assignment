@@ -23,12 +23,12 @@ void main()
 {
 	Color = VertColor;
 	UVs = VertUVs;
+	
 	tbn = mat3(
 		(modelMatrix * vec4(VertTangent, 0)).xyz,
 		(modelMatrix * vec4(VertBitangent, 0)).xyz,
 		(modelMatrix * vec4(VertNormal, 0)).xyz
 	);
-	MeshNormal = transpose(inverse(modelMatrix)) * vec4(VertNormal, 0);
 	WorldPos = modelMatrix * vec4(Position,1);
 	gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * vec4(Position, 1);
 }
