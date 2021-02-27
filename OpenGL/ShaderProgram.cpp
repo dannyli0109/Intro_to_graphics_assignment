@@ -1,6 +1,13 @@
 #include "ShaderProgram.h"
 
 
+ShaderProgram::~ShaderProgram()
+{
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+	glDeleteProgram(shaderProgram);
+}
+
 ShaderProgram::ShaderProgram(std::string vertexFilename, std::string fragmentFilename)
 {
 	everythingIsOkay = true;

@@ -156,8 +156,10 @@
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="Transform.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Utilities.cpp" />
@@ -171,8 +173,11 @@
     <ClInclude Include="glad.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="khrplatform.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Matrices.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />

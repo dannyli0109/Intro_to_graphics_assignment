@@ -5,20 +5,24 @@
 
 std::string LoadFileAsString(std::string filename)
 {
-	std::fstream ifs;
-	ifs.open(filename, std::ios::in);
-	std::stringstream ss;
+	std::stringstream fileSoFar;
+	std::ifstream file(filename);
 
-	if (ifs.is_open())
+	if (file.is_open())
 	{
-		std::string line;
-		while (std::getline(ifs, line))
+		while (!file.eof())
 		{
-			ss << line << std::endl;
+			std::string thisLine;
+			std::getline(file, thisLine);
+			fileSoFar << thisLine << std::endl;
 		}
-		ifs.close();
+		return fileSoFar.str();
 	}
-	return ss.str();
+	else
+	{
+		std::cout << "Error loading file: " << filename << std::endl;
+		return "";
+	}
 }
 
 float Lerp(float n1, float n2, float t)

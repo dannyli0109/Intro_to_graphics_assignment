@@ -15,6 +15,11 @@
 
 #include <sstream>
 
+// components;
+#include "Transform.h"
+
+#include "Graphics.h"
+
 int main(void)
 {
 	{
@@ -23,6 +28,7 @@ int main(void)
 
 		if (!gladLoadGL()) return -1;
 		glEnable(GL_DEPTH_TEST);
+		glfwSwapInterval(1);
 
 		int width;
 		int height;
@@ -42,23 +48,27 @@ int main(void)
 		program.SetUniform("normalTexture", 2);
 
 		Camera camera(glm::vec3(0, 0.0, 10.0f), glm::vec3(0, 1.0f, 0), 270.0f, 0.0f, glm::pi<float>() * 0.25f, width / (float)height, 0.1f, 100.0f);
-		GameObject soulSpear(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+		GameObject soulSpear({
+			new Transform({0, 0, 0}, {0, 0, 0}, {1, 1, 1})
+		});
+
+
 		PointLight pointLight1(glm::vec3(3.0f, 1.5f, 3.0), glm::vec3(20.0f, 20.0f, 20.0f));
 		PointLight pointLight2(glm::vec3(-3.0f, 1.5f, 3.0), glm::vec3(20.0f, 20.0f, 20.0f));
 
 		PointLight lights[2] = { pointLight1, pointLight2 };
 
-		Mesh lightMesh1(glm::normalize(pointLight1.GetIntensity()));
-		Mesh lightMesh2(glm::normalize(pointLight2.GetIntensity()));
+		//Mesh lightMesh1(glm::normalize(pointLight1.GetIntensity()));
+		//Mesh lightMesh2(glm::normalize(pointLight2.GetIntensity()));
 
-		Mesh lightMeshes[2] = { lightMesh1, lightMesh2 };
+		//Mesh lightMeshes[2] = { lightMesh1, lightMesh2 };
 
-		GameObject lightCube1(pointLight1.GetPosition(), glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f));
-		GameObject lightCube2(pointLight2.GetPosition(), glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f));
+		//GameObject lightCube1(pointLight1.GetPosition(), glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f));
+		//GameObject lightCube2(pointLight2.GetPosition(), glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f));
 
-		GameObject lightCubes[2] = { lightCube1, lightCube2 };
+		//GameObject lightCubes[2] = { lightCube1, lightCube2 };
 		AmbientLight ambientLight(glm::vec3(1, 1, 1));
-		
+	
 		while (!glfwWindowShouldClose(window->Get()))
 		{
 			float deltaTime = glfwGetTime() - time;
@@ -87,13 +97,13 @@ int main(void)
 			}
 			program.SetUniform("lightCount", 2);
 
-			//// ambient
-			//program.SetUniform("ambientColor", glm::vec4(ambientColor.x, ambientColor.y, ambientColor.z, 1.0f));
+	//		//// ambient
+	//		//program.SetUniform("ambientColor", glm::vec4(ambientColor.x, ambientColor.y, ambientColor.z, 1.0f));
 
-			//// specular
-			//program.SetUniform("specularColor", glm::vec4(specularColor.x, specularColor.y, specularColor.z, 1.0f));
+	//		//// specular
+	//		//program.SetUniform("specularColor", glm::vec4(specularColor.x, specularColor.y, specularColor.z, 1.0f));
 			program.SetUniform("specularPower", 20.0f);
-			
+
 			program.SetUniform("ambientLightIntensity", ambientLight.GetIntensity());
 			program.SetUniform("ka", glm::vec3(0.0f, 0.0f, 0.0f));
 			program.SetUniform("kd", glm::vec3(0.8f, 0.8f, 0.8f));
@@ -104,13 +114,14 @@ int main(void)
 			glm::vec3 cameraPos = camera.GetPosition();
 			glm::mat4 cameraViewMatrix = camera.GetViewMatrix();
 			glm::mat4 cameraProjectionMatrix = camera.GetProjectionMatrix(width, height);
-			
+
 			program.SetUniform("cameraPos", cameraPos);
 			program.SetUniform("viewMatrix", cameraViewMatrix);
 			program.SetUniform("projectionMatrix", cameraProjectionMatrix);
-			
+
 			//soulSpear.RotateY(glfwGetTime());
-			program.SetUniform("modelMatrix", soulSpear.GetModelMatrix());
+			//program.SetUniform("modelMatrix", soulSpear.GetModelMatrix());
+			soulSpear.Update(deltaTime, program);
 			mesh.Bind();
 			diffuseTexture.Bind(0);
 			SpecularTexture.Bind(1);
@@ -120,30 +131,28 @@ int main(void)
 			Mesh::Unbind();
 			Texture::Unbind();
 
-			lightShader.UseShader();
-			lightShader.SetUniform("cameraPos", cameraPos);
-			lightShader.SetUniform("viewMatrix", cameraViewMatrix);
-			lightShader.SetUniform("projectionMatrix", cameraProjectionMatrix);
+	//		/*lightShader.UseShader();
+	//		lightShader.SetUniform("cameraPos", cameraPos);
+	//		lightShader.SetUniform("viewMatrix", cameraViewMatrix);
+	//		lightShader.SetUniform("projectionMatrix", cameraProjectionMatrix);
 
-			for (int i = 0; i < 2; i++)
-			{
-				lightMeshes[i].Bind();
-				lightShader.SetUniform("lightColor", glm::normalize(lights[i].GetIntensity()));
-				lightShader.SetUniform("modelMatrix", lightCubes[i].GetModelMatrix());
-				lightMeshes[i].Draw();
-			}
-			
+	//		for (int i = 0; i < 2; i++)
+	//		{
+	//			lightMeshes[i].Bind();
+	//			lightShader.SetUniform("lightColor", glm::normalize(lights[i].GetIntensity()));
+	//			lightShader.SetUniform("modelMatrix", lightCubes[i].GetModelMatrix());
+	//			lightMeshes[i].Draw();
+	//		}
+
 			Mesh::Unbind();
 			Texture::Unbind();
 
 			glfwSwapBuffers(window->Get());
 			glfwPollEvents();
 		}
-		Window::DeleteInstance();
 		glfwTerminate();
+		Window::DeleteInstance();
 	}
-	_CrtDumpMemoryLeaks();
-
-
+	//_CrtDumpMemoryLeaks();
 	return 0;
 }

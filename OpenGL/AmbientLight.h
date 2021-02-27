@@ -6,6 +6,6 @@ public:
 	AmbientLight(glm::vec3 intensity);
 	glm::vec3 GetIntensity();
 private:
-	glm::vec3 intensity;
+	glm::vec3 intensity{1.0f, 1.0f, 1.0f};
 };
 

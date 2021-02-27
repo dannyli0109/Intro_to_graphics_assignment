@@ -1,23 +1,39 @@
 #include "GameObject.h"
 #include "ShaderProgram.h"
 
-GameObject::GameObject(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+GameObject::GameObject(const std::vector<Component*>& components)
 {
-	this->position = position;
-	this->rotation = rotation;
-	this->scale = scale;
+	this->components = components;
+
+	for (Component* component : components)
+	{
+		component->gameObject = this;
+	}
 }
 
-void GameObject::Update(float deltaTime)
+GameObject::~GameObject()
 {
 	for (Component* component : components)
 	{
-		component->Update(deltaTime);
+		delete component;
 	}
 
 	for (GameObject* child : children)
 	{
-		child->Update(deltaTime);
+		delete child;
+	}
+}
+
+void GameObject::Update(float deltaTime, ShaderProgram& shader)
+{
+	for (Component* component : components)
+	{
+		component->Update(deltaTime, shader);
+	}
+
+	for (GameObject* child : children)
+	{
+		child->Update(deltaTime, shader);
 	}
 }
 
@@ -26,39 +42,39 @@ void GameObject::Draw()
 	/*mesh->Draw();*/
 }
 
-void GameObject::RotateX(float radian)
-{
-	rotation.x = radian;
-}
+//void GameObject::RotateX(float radian)
+//{
+//	rotation.x = radian;
+//}
+//
+//void GameObject::RotateY(float radian)
+//{
+//	rotation.y = radian;
+//}
+//
+//void GameObject::RotateZ(float radian)
+//{
+//	rotation.z = radian;
+//}
+//
+//void GameObject::Translate(float x, float y, float z)
+//{
+//	position.x += x;
+//	position.y += y;
+//	position.z += z;
+//}
 
-void GameObject::RotateY(float radian)
-{
-	rotation.y = radian;
-}
-
-void GameObject::RotateZ(float radian)
-{
-	rotation.z = radian;
-}
-
-void GameObject::Translate(float x, float y, float z)
-{
-	position.x += x;
-	position.y += y;
-	position.z += z;
-}
-
-glm::mat4 GameObject::GetModelMatrix()
-{
-	glm::mat4 modelMat(1.0f);
-	modelMat = glm::translate(modelMat, position);
-	modelMat = glm::scale(modelMat, scale);
-	modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
-	modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
-	modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
-
-	return modelMat;
-}
+//glm::mat4 GameObject::GetModelMatrix()
+//{
+//	glm::mat4 modelMat(1.0f);
+//	modelMat = glm::translate(modelMat, position);
+//	modelMat = glm::scale(modelMat, scale);
+//	modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
+//	modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
+//	modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
+//
+//	return modelMat;
+//}
 
 void GameObject::AddChild(GameObject* child)
 {
@@ -86,6 +102,12 @@ void GameObject::RemoveComponent(Component* component)
 	auto position = std::find(components.begin(), components.end(), component);
 	if (position != components.end())
 	{
+		delete (*position);
 		components.erase(position);
 	}
+}
+
+GameObject* GameObject::GetParent()
+{
+	return parent;
 }
