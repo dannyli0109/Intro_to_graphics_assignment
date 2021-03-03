@@ -35,8 +35,6 @@ public:
 	ShaderProgram* outlineShader = nullptr;
 	QuadMesh* quadMesh = nullptr;
 
-	ColorShadingMaterial* outlineTex = nullptr;
-
 	std::vector<Entity*> entities;
 	int selected = 0;
 	bool Initialise();

@@ -1,8 +1,16 @@
 #include "ProgramManager.h"
 
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
 bool ProgramManager::Initialise()
 {
-	window = new Window(WINDOW_WIDTH, WINDOW_HEIGHT, "Graphics Assignment");
+	window = DBG_NEW Window(WINDOW_WIDTH, WINDOW_HEIGHT, "Graphics Assignment");
 	if (!window->Created()) return false;
 	glEnable(GL_DEPTH_TEST);
 
@@ -24,34 +32,29 @@ bool ProgramManager::Initialise()
 	ImGui_ImplOpenGL3_Init();
 
 	glm::vec2 windowSize = window->GetSize();
-	frameBuffer = new FrameBuffer(windowSize.x, windowSize.y);
+	frameBuffer = DBG_NEW FrameBuffer(windowSize.x, windowSize.y);
 	window->SetSizeCallback(OnWindowSizeChange);
-	phongShading = new ShaderProgram("Plain.vert", "Plain.frag");
-	colorShading = new ShaderProgram("Light.vert", "Light.frag");
-	outlineShader = new ShaderProgram("Outline.vert", "Outline.frag");
+	phongShading = DBG_NEW ShaderProgram("Plain.vert", "Plain.frag");
+	colorShading = DBG_NEW ShaderProgram("Light.vert", "Light.frag");
+	outlineShader = DBG_NEW ShaderProgram("Outline.vert", "Outline.frag");
 
-	diffuseTexture = new Texture("soulspear\\soulspear_diffuse.tga");
+	diffuseTexture = DBG_NEW Texture("soulspear\\soulspear_diffuse.tga");
 	phongShading->SetUniform("diffuseTexture", 0);
-	specularTexture = new Texture("soulspear\\soulspear_specular.tga");
+	specularTexture = DBG_NEW Texture("soulspear\\soulspear_specular.tga");
 	phongShading->SetUniform("specularTexture", 1);
-	normalTexture = new Texture("soulspear\\soulspear_normal.tga");
+	normalTexture = DBG_NEW Texture("soulspear\\soulspear_normal.tga");
 	phongShading->SetUniform("normalTexture", 2);
 
-	quadMesh = new QuadMesh();
+	quadMesh = DBG_NEW QuadMesh();
 
-	outlineTex = new ColorShadingMaterial(
-		colorShading,
-		{ 1.0f, 0.0f, 0.0f }
-	);
-
-	camera = new Camera(glm::vec3(0, 2.0, 10.0f), glm::vec3(0, 1.0f, 0), 270.0f, 0.0f, glm::pi<float>() * 0.25f, window->GetAspectRatio(), 0.1f, 100.0f);
+	camera = DBG_NEW Camera(glm::vec3(0, 2.0, 10.0f), glm::vec3(0, 1.0f, 0), 270.0f, 0.0f, glm::pi<float>() * 0.25f, window->GetAspectRatio(), 0.1f, 100.0f);
 	entities.push_back(
-		new Entity(
+		DBG_NEW Entity(
 			"Soul Spear",
 			{
-				new Transform({0, 0, 0}, {0, 0, 0}, {1, 1, 1}),
-				new ObjMesh("soulspear/soulspear.obj"),
-				new PhongShadingMaterial(
+				DBG_NEW Transform({0, 0, 0}, {0, 0, 0}, {1, 1, 1}),
+				DBG_NEW ObjMesh("soulspear/soulspear.obj"),
+				DBG_NEW PhongShadingMaterial(
 					phongShading, 
 					glm::vec3(0.0f, 0.0f, 0.0f),
 					glm::vec3(0.8f, 0.8f, 0.8f),
@@ -66,30 +69,17 @@ bool ProgramManager::Initialise()
 	);
 
 	entities.push_back(
-		new Entity(
-			"Ambient Light",
-			{
-				new AmbientLight(
-					{ phongShading },
-					{ 1.0f, 1.0f, 1.0f },
-					1.0f
-				)
-			}
-		)
-	);
-
-	entities.push_back(
-		new Entity(
+		DBG_NEW Entity(
 			"Point Light1",
 			{
-				new Transform({-3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
-				new PointLight(
+				DBG_NEW Transform({-3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
+				DBG_NEW PointLight(
 					{ phongShading },
 					{ 1.0f, 1.0f, 1.0f }, 
 					20.0f
 				),
-				new CubeMesh(),
-				new ColorShadingMaterial(
+				DBG_NEW CubeMesh(),
+				DBG_NEW ColorShadingMaterial(
 					colorShading,
 					{ 1.0f, 1.0f, 1.0f }
 				)
@@ -98,19 +88,32 @@ bool ProgramManager::Initialise()
 	);
 
 	entities.push_back(
-		new Entity(
+		DBG_NEW Entity(
 			"Point Light2",
 			{
-				new Transform({3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
-				new PointLight(
+				DBG_NEW Transform({3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
+				DBG_NEW PointLight(
 					{ phongShading },
 					{1.0f, 1.0f, 1.0f}, 
 					20.0f
 				),
-				new CubeMesh(),
-				new ColorShadingMaterial(
+				DBG_NEW CubeMesh(),
+				DBG_NEW ColorShadingMaterial(
 					colorShading,
 					{1.0f, 1.0f, 1.0f}
+				)
+			}
+		)
+	);
+
+	entities.push_back(
+		DBG_NEW Entity(
+			"Ambient Light",
+			{
+				DBG_NEW AmbientLight(
+					{ phongShading },
+					{ 1.0f, 1.0f, 1.0f },
+					1.0f
 				)
 			}
 		)
@@ -133,7 +136,10 @@ void ProgramManager::ShutDown()
 	delete window;
 	delete phongShading;
 	delete colorShading;
+	delete outlineShader;
+	delete frameBuffer;
 	delete camera;
+	delete quadMesh;
 	for (Entity* entity : entities)
 	{
 		delete entity;

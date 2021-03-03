@@ -27,6 +27,7 @@ public:
 private:
 	GLuint fboID;
 	GLuint texID;
+	GLuint rboID;
 
 	bool exists = false;
 };

@@ -28,11 +28,11 @@ void FrameBuffer::Create(int width, int height)
 
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texID, 0);
 
-	unsigned int rbo;
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+
+	glGenRenderbuffers(1, &rboID);
+	glBindRenderbuffer(GL_RENDERBUFFER, rboID);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height); // use a single renderbuffer object for both a depth AND stencil buffer.
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboID); // now actually attach it
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
 	{
@@ -84,6 +84,7 @@ const FrameBuffer& FrameBuffer::operator=(FrameBuffer&& other)
 	{
 		glDeleteFramebuffers(1, &fboID);
 		glDeleteTextures(1, &texID);
+		glDeleteRenderbuffers(1, &rboID);
 	}
 
 
