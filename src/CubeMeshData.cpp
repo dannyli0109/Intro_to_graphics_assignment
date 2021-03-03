@@ -1,6 +1,6 @@
 #include "CubeMeshData.h"
 
-CubeMeshData::CubeMeshData()
+CubeMeshData::CubeMeshData(std::string name) : MeshData(name)
 {
 	std::vector<Vertex> vertices = {
 	{ {-0.5, -0.5, 0.5}, {0, 0, 1}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0} },

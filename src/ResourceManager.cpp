@@ -13,9 +13,9 @@ ResourceManager* ResourceManager::CreateInstance()
 	}
 	return instance;
 }
-void ResourceManager::AddMesh(std::string name, MeshData* mesh)
+void ResourceManager::AddMesh(MeshData* mesh)
 {
-	meshDictionary[name] = mesh;
+	meshes.push_back(mesh);
 }
 void ResourceManager::AddTexture(std::string name, Texture* texture)
 {
@@ -25,9 +25,30 @@ Texture* ResourceManager::GetTexture(std::string name)
 {
 	return textureDictionary[name];
 }
-MeshData* ResourceManager::GetMesh(std::string mesh)
+MeshData* ResourceManager::GetMesh(int intex)
 {
-	return meshDictionary[mesh];
+	return meshes[intex];
+}
+const std::vector<MeshData*>& ResourceManager::GetMeshes()
+{
+	return meshes;
+}
+const std::map<std::string, Texture*>& ResourceManager::GetTextureDict()
+{
+	return textureDictionary;
+}
+void ResourceManager::DrawGUI()
+{
+	if (meshes.size() > selectedMesh)
+	{
+		std::vector<std::string> meshNames;
+		for (MeshData* mesh : meshes)
+		{
+			meshNames.push_back(mesh->GetName());
+		}
+
+		ImGui::ListBox("Meshes", &selectedMesh, VectorOfStringGetter, static_cast<void*>(&meshNames), meshNames.size());
+	}
 }
 void ResourceManager::Destroy()
 {
@@ -36,9 +57,9 @@ void ResourceManager::Destroy()
 		delete it->second;
 	}
 
-	for (auto it = meshDictionary.begin(); it != meshDictionary.end(); it++)
+	for (MeshData* mesh : meshes)
 	{
-		delete it->second;
+		delete mesh;
 	}
 	delete instance;
 	instance = nullptr;

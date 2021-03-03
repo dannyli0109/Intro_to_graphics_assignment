@@ -1,5 +1,6 @@
 #pragma once
 #include "Graphics.h"
+#include <string>
 struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;
@@ -19,13 +20,16 @@ public:
 	virtual void Draw();
 	virtual void Bind();
 	static void Unbind();
+	std::string GetName();
 
 protected:
-	MeshData() = default;
+	MeshData(std::string name) {
+		this->name = name;
+	};
 	GLuint verticesID;
 	GLuint indicesID;
 	GLuint vao;
 	GLuint triCount;
-
+	std::string name;
 };
 

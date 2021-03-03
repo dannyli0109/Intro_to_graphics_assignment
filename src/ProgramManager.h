@@ -51,7 +51,5 @@ private:
 	void Draw();
 	void DrawGUI();
 	void DestroyGUI();
-
-	static bool VectorOfStringGetter(void* data, int n, const char** out_text);
 };
 

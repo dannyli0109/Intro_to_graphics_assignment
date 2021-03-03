@@ -21,8 +21,8 @@ bool ProgramManager::Initialise()
 
 	frameBuffer = new FrameBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	phongShader = new ShaderProgram("Plain.vert", "Plain.frag");
-	colorShader = new ShaderProgram("Light.vert", "Light.frag");
+	phongShader = new ShaderProgram("Phong.vert", "Phong.frag");
+	colorShader = new ShaderProgram("Color.vert", "Color.frag");
 	outlineShader = new ShaderProgram("Outline.vert", "Outline.frag");	
 
 	// loading the texture and mesh in advanced so that they can be reused later
@@ -30,9 +30,9 @@ bool ProgramManager::Initialise()
 	resourceManager->AddTexture("soulspear_specular", new Texture("soulspear\\soulspear_specular.tga"));
 	resourceManager->AddTexture("soulspear_normal", new Texture("soulspear\\soulspear_normal.tga"));
 
-	resourceManager->AddMesh("soulspear", new ObjMeshData("soulspear/soulspear.obj"));
-	resourceManager->AddMesh("cube", new CubeMeshData());
-	resourceManager->AddMesh("quad", new QuadMeshData());
+	resourceManager->AddMesh(new ObjMeshData("soulspear", "soulspear/soulspear.obj"));
+	resourceManager->AddMesh(new CubeMeshData("cube"));
+	resourceManager->AddMesh(new QuadMeshData("quad"));
 
 	// binding the texture unit for for phong lighting shader
 	phongShader->SetUniform("diffuseTexture", 0);
@@ -45,7 +45,7 @@ bool ProgramManager::Initialise()
 			"Soul Spear",
 			{
 				new Transform({0, 0, 0}, {0, 0, 0}, {1, 1, 1}),
-				new MeshContainer(resourceManager->GetMesh("soulspear")),
+				new MeshContainer(0),
 				new PhongShadingMaterial(
 					phongShader, 
 					glm::vec3(0.0f, 0.0f, 0.0f),
@@ -70,7 +70,7 @@ bool ProgramManager::Initialise()
 					{ 1.0f, 1.0f, 1.0f }, 
 					20.0f
 				),
-				new MeshContainer(resourceManager->GetMesh("cube")),
+				new MeshContainer(1),
 				new ColorShadingMaterial(
 					colorShader,
 					{ 1.0f, 1.0f, 1.0f }
@@ -89,7 +89,7 @@ bool ProgramManager::Initialise()
 					{1.0f, 1.0f, 1.0f}, 
 					20.0f
 				),
-				new MeshContainer(resourceManager->GetMesh("cube")),
+				new MeshContainer(1),
 				new ColorShadingMaterial(
 					colorShader,
 					{1.0f, 1.0f, 1.0f}
@@ -176,6 +176,7 @@ void ProgramManager::Update()
 	}
 
 	UpdateGUI();
+
 }
 
 void ProgramManager::UpdateGUI()
@@ -192,6 +193,7 @@ void ProgramManager::Draw()
 	// Bind frame buffer, everything from now on will only render to the frame buffer
 	frameBuffer->Bind();
 	glEnable(GL_DEPTH_TEST);
+
 	// use alpha channel to detect edge in the outline shader
 	glClearColor(
 		0.2, 0.2, 0.2, 0.0
@@ -227,7 +229,7 @@ void ProgramManager::Draw()
 	outlineShader->SetUniform("thickness", 2.0f);
 	frameBuffer->BindTexture();
 
-	MeshData* quadMesh = resourceManager->GetMesh("quad");
+	MeshData* quadMesh = resourceManager->GetMesh(2);
 	quadMesh->Bind();
 	quadMesh->Draw();
 
@@ -258,8 +260,7 @@ void ProgramManager::DrawGUI()
 
 	if (entities.size() > selected)
 	{
-		const char* label = "Entities";
-		ImGui::Begin("Entities", 0, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+		ImGui::Begin("Entities");
 		ImGui::ListBox("Entities", &selected, VectorOfStringGetter, static_cast<void*>(&entityNames), entityNames.size());
 
 		// Display the GUI for the selected enetity
@@ -267,8 +268,11 @@ void ProgramManager::DrawGUI()
 		ImGui::End();
 	}
 
+	//resourceManager->DrawGUI();
+
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui::EndFrame();
 }
 
 void ProgramManager::DestroyGUI()
@@ -279,10 +283,3 @@ void ProgramManager::DestroyGUI()
 	ImGui::DestroyContext();
 }
 
-bool ProgramManager::VectorOfStringGetter(void* vec, int idx, const char** out_text)
-{
-	auto& vector = *static_cast<std::vector<std::string>*>(vec);
-	if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
-	*out_text = vector.at(idx).c_str();
-	return true;
-}

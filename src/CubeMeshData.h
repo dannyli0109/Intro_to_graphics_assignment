@@ -5,6 +5,6 @@ class CubeMeshData :
 	public MeshData
 {
 public:
-	CubeMeshData();
+	CubeMeshData(std::string name);
 };
 

@@ -16,3 +16,6 @@ void ParseObj(
 	std::vector<glm::vec3>& normals, std::vector<unsigned short>& normalIndices,
 	bool flipUV
 );
+
+bool VectorOfStringGetter(void* data, int n, const char** out_text);
+

@@ -5,6 +5,6 @@ class QuadMeshData :
 	public MeshData
 {
 public:
-	QuadMeshData();
+	QuadMeshData(std::string name);
 };
 
