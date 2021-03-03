@@ -3,8 +3,6 @@
 #include "Window.h"
 #include "Utilities.h"
 #include "ShaderProgram.h"
-#include "ObjMesh.h"
-#include "CubeMesh.h"
 #include "Camera.h"
 #include "Entity.h"
 #include "Transform.h"
@@ -15,29 +13,33 @@
 #include "ColorShadingMaterial.h"
 #include "AmbientLight.h"
 #include "FrameBuffer.h"
-#include "QuadMesh.h"
+#include "CubeMeshData.h"
+#include "ObjMeshData.h"
+#include "MeshContainer.h"
+#include "QuadMeshData.h"
+
 #include <string>
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
 
+class ResourceManager;
+
 class ProgramManager
 {
 public:
 	Window* window = nullptr;
-	ShaderProgram* phongShading = nullptr;
-	ShaderProgram* colorShading = nullptr;
+	ShaderProgram* phongShader = nullptr;
+	ShaderProgram* colorShader = nullptr;
 	Camera* camera = nullptr;
-	Texture* diffuseTexture = nullptr;
-	Texture* normalTexture = nullptr;
-	Texture* specularTexture = nullptr;
 	FrameBuffer* frameBuffer = nullptr;
 	ShaderProgram* outlineShader = nullptr;
-	QuadMesh* quadMesh = nullptr;
+	ResourceManager* resourceManager = nullptr;
 
 	std::vector<Entity*> entities;
 	int selected = 0;
 	bool Initialise();
+	void InitGUI();
 	void Run();
 	void ShutDown();
 	float time = 0;

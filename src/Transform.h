@@ -3,6 +3,8 @@
 #include "Component.h"
 #include "Matrices.h"
 #include "GUI.h"
+#include "Material.h"
+
 class ShaderProgram;
 
 class Transform : public Component

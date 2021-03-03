@@ -1,10 +1,7 @@
-#include "ObjMesh.h"
+#include "ObjMeshData.h"
 
-
-ObjMesh::ObjMesh(std::string fileName)
+ObjMeshData::ObjMeshData(std::string fileName)
 {
-	this->name = "OBJ Mesh";
-
 	std::vector<Vertex> vertices;
 	std::vector<glm::vec3> verts;
 	std::vector<unsigned short> indices;
@@ -13,7 +10,6 @@ ObjMesh::ObjMesh(std::string fileName)
 	std::vector<glm::vec3> normals;
 	std::vector<unsigned short> normalIndices;
 
-	this->fileName = fileName;
 	// Super not bullet proof parser, it doesn't eliminate identical verts, but it's fine for now
 	ParseObj(fileName, verts, indices, uvs, uvIndices, normals, normalIndices, true);
 
@@ -69,13 +65,4 @@ ObjMesh::ObjMesh(std::string fileName)
 	}
 
 	InitialiseMesh(vertices.size(), vertices.data(), indices.size(), indices.data());
-}
-
-
-void ObjMesh::DrawGui()
-{
-	if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Text(fileName.c_str());
-	}
 }

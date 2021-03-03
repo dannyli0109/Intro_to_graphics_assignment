@@ -4,6 +4,9 @@
 #include "GUI.h"
 #include "Transform.h"
 #include "ColorShadingMaterial.h"
+#include <sstream>
+#include "ShaderProgram.h"
+#include "Material.h"
 
 class PointLight : public Component
 {

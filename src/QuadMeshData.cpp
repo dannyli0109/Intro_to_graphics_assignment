@@ -1,10 +1,7 @@
-#include "QuadMesh.h"
+#include "QuadMeshData.h"
 
-
-QuadMesh::QuadMesh()
+QuadMeshData::QuadMeshData()
 {
-	this->name = "Quad Mesh";
-
 	std::vector<Vertex> vertices = {
 		{ {-0.5f, 0.5f, 0.5f}, {0, 0, 1}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0} },
 		{ {0.5f, 0.5f, 0.5f}, {0, 0, 1}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {1, 0} },

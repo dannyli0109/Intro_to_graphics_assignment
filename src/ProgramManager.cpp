@@ -1,4 +1,6 @@
 #include "ProgramManager.h"
+#include "ResourceManager.h"
+
 
 #ifdef _DEBUG
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
@@ -10,18 +12,113 @@
 
 bool ProgramManager::Initialise()
 {
-	window = DBG_NEW Window(WINDOW_WIDTH, WINDOW_HEIGHT, "Graphics Assignment");
+	window = new Window(WINDOW_WIDTH, WINDOW_HEIGHT, "Graphics Assignment");
 	if (!window->Created()) return false;
 	glEnable(GL_DEPTH_TEST);
 
+	InitGUI();
+	resourceManager = ResourceManager::CreateInstance();
 
+	frameBuffer = new FrameBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+	phongShader = new ShaderProgram("Plain.vert", "Plain.frag");
+	colorShader = new ShaderProgram("Light.vert", "Light.frag");
+	outlineShader = new ShaderProgram("Outline.vert", "Outline.frag");	
+
+	// loading the texture and mesh in advanced so that they can be reused later
+	resourceManager->AddTexture("soulspear_diffuse", new Texture("soulspear\\soulspear_diffuse.tga"));
+	resourceManager->AddTexture("soulspear_specular", new Texture("soulspear\\soulspear_specular.tga"));
+	resourceManager->AddTexture("soulspear_normal", new Texture("soulspear\\soulspear_normal.tga"));
+
+	resourceManager->AddMesh("soulspear", new ObjMeshData("soulspear/soulspear.obj"));
+	resourceManager->AddMesh("cube", new CubeMeshData());
+	resourceManager->AddMesh("quad", new QuadMeshData());
+
+	phongShader->SetUniform("diffuseTexture", 0);
+	phongShader->SetUniform("specularTexture", 1);
+	phongShader->SetUniform("normalTexture", 2);
+
+	camera = new Camera(glm::vec3(0, 2.0, 10.0f), glm::vec3(0, 1.0f, 0), 270.0f, 0.0f, glm::pi<float>() * 0.25f, window->GetAspectRatio(), 0.1f, 100.0f);
+	entities.push_back(
+		new Entity(
+			"Soul Spear",
+			{
+				new Transform({0, 0, 0}, {0, 0, 0}, {1, 1, 1}),
+				new MeshContainer(resourceManager->GetMesh("soulspear")),
+				new PhongShadingMaterial(
+					phongShader, 
+					glm::vec3(0.0f, 0.0f, 0.0f),
+					glm::vec3(0.8f, 0.8f, 0.8f),
+					glm::vec3(0.5f, 0.5f, 0.5f),
+					20.0f,
+					resourceManager->GetTexture("soulspear_diffuse"),
+					resourceManager->GetTexture("soulspear_normal"),
+					resourceManager->GetTexture("soulspear_specular")
+				)
+			}
+		)
+	);
+
+	entities.push_back(
+		new Entity(
+			"Point Light1",
+			{
+				new Transform({-3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
+				new PointLight(
+					{ phongShader },
+					{ 1.0f, 1.0f, 1.0f }, 
+					20.0f
+				),
+				new MeshContainer(resourceManager->GetMesh("cube")),
+				new ColorShadingMaterial(
+					colorShader,
+					{ 1.0f, 1.0f, 1.0f }
+				)
+			}
+		)
+	);
+
+	entities.push_back(
+		new Entity(
+			"Point Light2",
+			{
+				new Transform({3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
+				new PointLight(
+					{ phongShader },
+					{1.0f, 1.0f, 1.0f}, 
+					20.0f
+				),
+				new MeshContainer(resourceManager->GetMesh("cube")),
+				new ColorShadingMaterial(
+					colorShader,
+					{1.0f, 1.0f, 1.0f}
+				)
+			}
+		)
+	);
+
+	entities.push_back(
+		new Entity(
+			"Ambient Light",
+			{
+				new AmbientLight(
+					{ phongShader },
+					{ 1.0f, 1.0f, 1.0f },
+					1.0f
+				)
+			}
+		)
+	);
+	return true;
+}
+
+void ProgramManager::InitGUI()
+{
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -30,104 +127,6 @@ bool ProgramManager::Initialise()
 	// Setup Platform/Renderer backends
 	ImGui_ImplGlfw_InitForOpenGL(window->Get(), true);
 	ImGui_ImplOpenGL3_Init();
-
-	glm::vec2 windowSize = window->GetSize();
-	frameBuffer = DBG_NEW FrameBuffer(windowSize.x, windowSize.y);
-	//window->SetSizeCallback([](GLFWwindow* window, int newWidth, int newHeight)
-	//	{
-	//		glViewport(0, 0, newWidth, newHeight);
-	//		frameBuffer->Create(newWidth, newHeight);
-	//	}
-	//);
-
-	phongShading = DBG_NEW ShaderProgram("Plain.vert", "Plain.frag");
-	colorShading = DBG_NEW ShaderProgram("Light.vert", "Light.frag");
-	outlineShader = DBG_NEW ShaderProgram("Outline.vert", "Outline.frag");
-
-
-	// TODO Load textures and mesh to a map and use a pointer to avoid loading the same thing multiple times
-
-	diffuseTexture = DBG_NEW Texture("soulspear\\soulspear_diffuse.tga");
-	phongShading->SetUniform("diffuseTexture", 0);
-	specularTexture = DBG_NEW Texture("soulspear\\soulspear_specular.tga");
-	phongShading->SetUniform("specularTexture", 1);
-	normalTexture = DBG_NEW Texture("soulspear\\soulspear_normal.tga");
-	phongShading->SetUniform("normalTexture", 2);
-
-	quadMesh = DBG_NEW QuadMesh();
-
-	camera = DBG_NEW Camera(glm::vec3(0, 2.0, 10.0f), glm::vec3(0, 1.0f, 0), 270.0f, 0.0f, glm::pi<float>() * 0.25f, window->GetAspectRatio(), 0.1f, 100.0f);
-	entities.push_back(
-		DBG_NEW Entity(
-			"Soul Spear",
-			{
-				DBG_NEW Transform({0, 0, 0}, {0, 0, 0}, {1, 1, 1}),
-				DBG_NEW ObjMesh("soulspear/soulspear.obj"),
-				DBG_NEW PhongShadingMaterial(
-					phongShading, 
-					glm::vec3(0.0f, 0.0f, 0.0f),
-					glm::vec3(0.8f, 0.8f, 0.8f),
-					glm::vec3(0.5f, 0.5f, 0.5f),
-					20.0f,
-					diffuseTexture,
-					normalTexture,
-					specularTexture
-				)
-			}
-		)
-	);
-
-	entities.push_back(
-		DBG_NEW Entity(
-			"Point Light1",
-			{
-				DBG_NEW Transform({-3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
-				DBG_NEW PointLight(
-					{ phongShading },
-					{ 1.0f, 1.0f, 1.0f }, 
-					20.0f
-				),
-				DBG_NEW CubeMesh(),
-				DBG_NEW ColorShadingMaterial(
-					colorShading,
-					{ 1.0f, 1.0f, 1.0f }
-				)
-			}
-		)
-	);
-
-	entities.push_back(
-		DBG_NEW Entity(
-			"Point Light2",
-			{
-				DBG_NEW Transform({3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
-				DBG_NEW PointLight(
-					{ phongShading },
-					{1.0f, 1.0f, 1.0f}, 
-					20.0f
-				),
-				DBG_NEW CubeMesh(),
-				DBG_NEW ColorShadingMaterial(
-					colorShading,
-					{1.0f, 1.0f, 1.0f}
-				)
-			}
-		)
-	);
-
-	entities.push_back(
-		DBG_NEW Entity(
-			"Ambient Light",
-			{
-				DBG_NEW AmbientLight(
-					{ phongShading },
-					{ 1.0f, 1.0f, 1.0f },
-					1.0f
-				)
-			}
-		)
-	);
-	return true;
 }
 
 void ProgramManager::Run()
@@ -143,23 +142,21 @@ void ProgramManager::Run()
 void ProgramManager::ShutDown()
 {
 	delete window;
-	delete phongShading;
-	delete colorShading;
-	delete outlineShader;
 	delete camera;
 
+	delete phongShader;
+	delete colorShader;
+	delete outlineShader;
+
 	delete frameBuffer;
-	delete quadMesh;
 	for (Entity* entity : entities)
 	{
 		delete entity;
 	}
 
-	delete diffuseTexture;
-	delete normalTexture;
-	delete specularTexture;
+	resourceManager->Destroy();
 
-	// Cleanup
+	// Cleanup GUI related
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
@@ -167,15 +164,20 @@ void ProgramManager::ShutDown()
 
 void ProgramManager::Update()
 {
+	// calculate deltatime
+	deltaTime = glfwGetTime() - time;
+	time = glfwGetTime();
+
+	// handle window resize
+	// resize the viewport as well as the frame buffer
 	if (window->ShouldUpdateSize())
 	{
 		glm::vec2 size = window->GetSize();
 		glViewport(0, 0, size.x, size.y);
 		frameBuffer->Create(size.x, size.y);
 	}
-	deltaTime = glfwGetTime() - time;
-	time = glfwGetTime();
-	// GUI
+
+	// Create GUI Frame (window)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -184,23 +186,25 @@ void ProgramManager::Update()
 
 void ProgramManager::Draw()
 {
-	glm::vec2 windowSize = window->GetSize();
+	// Bind frame buffer, everything from now on will only render to the frame buffer
 	frameBuffer->Bind();
 	glEnable(GL_DEPTH_TEST);
+	// use alpha channel to detect edge in the outline shader
 	glClearColor(
 		0.2, 0.2, 0.2, 0.0
 	);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	camera->HandleInput(deltaTime, window);
-	camera->Update(deltaTime, window, phongShading);
-	camera->Update(deltaTime, window, colorShading);
+	camera->Update(deltaTime, window, phongShader);
+	camera->Update(deltaTime, window, colorShader);
 
 	for (Entity* entity : entities)
 	{
 		entity->Update(deltaTime);
 	}
 
+	// render only the selected object to the outline shader
 	for (int i = 0; i < entities.size(); i++)
 	{
 		if (i == selected)
@@ -210,22 +214,23 @@ void ProgramManager::Draw()
 	}
 
 	FrameBuffer::Unbind();
-	//Mesh::Unbind();
-	//Texture::Unbind();
 
-
+	// render the frame buffer to a quad
 	glDisable(GL_DEPTH_TEST);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	outlineShader->UseShader();
 	frameBuffer->BindTexture();
+
+	MeshData* quadMesh = resourceManager->GetMesh("quad");
+	quadMesh->Bind();
 	quadMesh->Draw();
 
-	Mesh::Unbind();
+	MeshData::Unbind();
 	Texture::Unbind();
 
-
+	// render the rest of the scene, don't clear the color bufffer otherwise the quad drawn on the screen will be erased.
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -234,6 +239,8 @@ void ProgramManager::Draw()
 		entities[i]->Draw();
 	}
 
+	// GUI Related
+	// Display all entity as list box and change the selected item accordingly
 	std::vector<std::string> entityNames;
 	for (Entity* entity : entities)
 	{
@@ -245,6 +252,8 @@ void ProgramManager::Draw()
 		const char* label = "Entities";
 		ImGui::Begin("Entities", 0, ImGuiWindowFlags_AlwaysVerticalScrollbar);
 		ImGui::ListBox("Entities", &selected, VectorOfStringGetter, static_cast<void*>(&entityNames), entityNames.size());
+
+		// Display the GUI for the selected enetity
 		entities[selected]->DrawGui();
 		ImGui::End();
 	}
@@ -255,10 +264,8 @@ void ProgramManager::Draw()
 
 bool ProgramManager::VectorOfStringGetter(void* vec, int idx, const char** out_text)
 {
-	
 	auto& vector = *static_cast<std::vector<std::string>*>(vec);
 	if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
 	*out_text = vector.at(idx).c_str();
 	return true;
-
 }

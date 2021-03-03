@@ -146,7 +146,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\QuadMesh.cpp" />
+    <ClCompile Include="src\QuadMeshData.cpp" />
+    <ClCompile Include="src\MeshContainer.cpp" />
+    <ClCompile Include="src\CubeMeshData.cpp" />
+    <ClCompile Include="src\ObjMeshData.cpp" />
+    <ClCompile Include="src\MeshData.cpp" />
+    <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\FrameBuffer.cpp" />
     <ClCompile Include="src\AmbientLight.cpp" />
     <ClCompile Include="src\ColorShadingMaterial.cpp" />
@@ -159,13 +164,11 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Component.cpp" />
-    <ClCompile Include="src\CubeMesh.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EntryPoint.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
-    <ClCompile Include="src\ObjMesh.cpp" />
     <ClCompile Include="src\PhongShadingMaterial.cpp" />
     <ClCompile Include="src\PointLight.cpp" />
     <ClCompile Include="src\ProgramManager.cpp" />
@@ -176,7 +179,12 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\QuadMesh.h" />
+    <ClInclude Include="src\QuadMeshData.h" />
+    <ClInclude Include="src\MeshContainer.h" />
+    <ClInclude Include="src\CubeMeshData.h" />
+    <ClInclude Include="src\MeshData.h" />
+    <ClInclude Include="src\ObjMeshData.h" />
+    <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\FrameBuffer.h" />
     <ClInclude Include="src\AmbientLight.h" />
     <ClInclude Include="src\ColorShadingMaterial.h" />
@@ -190,7 +198,6 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Component.h" />
-    <ClInclude Include="src\CubeMesh.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Graphics.h" />
     <ClInclude Include="src\GUI.h" />
@@ -198,7 +205,6 @@
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Matrices.h" />
     <ClInclude Include="src\Mesh.h" />
-    <ClInclude Include="src\ObjMesh.h" />
     <ClInclude Include="src\PhongShadingMaterial.h" />
     <ClInclude Include="src\PointLight.h" />
     <ClInclude Include="src\ProgramManager.h" />
