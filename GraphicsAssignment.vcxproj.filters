@@ -107,6 +107,12 @@
     <ClCompile Include="src\AmbientLight.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="src\FrameBuffer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\QuadMesh.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -200,6 +206,12 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="src\AmbientLight.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FrameBuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\QuadMesh.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>

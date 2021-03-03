@@ -6,6 +6,7 @@
 #include "Material.h"
 #include "Transform.h"
 #include "Entity.h"
+#include "ColorShadingMaterial.h"
 
 struct Vertex {
 	glm::vec3 position;
@@ -36,7 +37,6 @@ public:
 	Mesh(const Mesh& other) = delete;
 	Mesh& operator= (const Mesh& other) = delete;
 	virtual void Draw() override;
-
 	virtual void Bind();
 	static void Unbind();
 
@@ -44,5 +44,7 @@ public:
 	GLuint indicesID;
 	GLuint vao;
 	GLuint triCount;
+
+	Material* outline = nullptr;
 };
 

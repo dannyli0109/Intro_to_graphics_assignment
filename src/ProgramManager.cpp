@@ -23,10 +23,12 @@ bool ProgramManager::Initialise()
 	ImGui_ImplGlfw_InitForOpenGL(window->Get(), true);
 	ImGui_ImplOpenGL3_Init();
 
-
+	glm::vec2 windowSize = window->GetSize();
+	frameBuffer = new FrameBuffer(windowSize.x, windowSize.y);
 	window->SetSizeCallback(OnWindowSizeChange);
 	phongShading = new ShaderProgram("Plain.vert", "Plain.frag");
 	colorShading = new ShaderProgram("Light.vert", "Light.frag");
+	outlineShader = new ShaderProgram("Outline.vert", "Outline.frag");
 
 	diffuseTexture = new Texture("soulspear\\soulspear_diffuse.tga");
 	phongShading->SetUniform("diffuseTexture", 0);
@@ -35,6 +37,12 @@ bool ProgramManager::Initialise()
 	normalTexture = new Texture("soulspear\\soulspear_normal.tga");
 	phongShading->SetUniform("normalTexture", 2);
 
+	quadMesh = new QuadMesh();
+
+	outlineTex = new ColorShadingMaterial(
+		colorShading,
+		{ 1.0f, 0.0f, 0.0f }
+	);
 
 	camera = new Camera(glm::vec3(0, 2.0, 10.0f), glm::vec3(0, 1.0f, 0), 270.0f, 0.0f, glm::pi<float>() * 0.25f, window->GetAspectRatio(), 0.1f, 100.0f);
 	entities.push_back(
@@ -155,8 +163,10 @@ void ProgramManager::Update()
 void ProgramManager::Draw()
 {
 	glm::vec2 windowSize = window->GetSize();
+	frameBuffer->Bind();
+	glEnable(GL_DEPTH_TEST);
 	glClearColor(
-		0.2, 0.2, 0.2, 1.0
+		0.2, 0.2, 0.2, 0.0
 	);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -169,9 +179,37 @@ void ProgramManager::Draw()
 		entity->Update(deltaTime);
 	}
 
-	for (Entity* entity : entities)
+	for (int i = 0; i < entities.size(); i++)
 	{
-		entity->Draw();
+		if (i == selected)
+		{
+			entities[i]->Draw();
+		}
+	}
+
+	FrameBuffer::Unbind();
+	//Mesh::Unbind();
+	//Texture::Unbind();
+
+
+	glDisable(GL_DEPTH_TEST);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	outlineShader->UseShader();
+	frameBuffer->BindTexture();
+	quadMesh->Draw();
+
+	Mesh::Unbind();
+	Texture::Unbind();
+
+
+	glEnable(GL_DEPTH_TEST);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	for (int i = 0; i < entities.size(); i++)
+	{
+		entities[i]->Draw();
 	}
 
 	std::vector<std::string> entityNames;
@@ -195,11 +233,10 @@ void ProgramManager::Draw()
 
 bool ProgramManager::VectorOfStringGetter(void* vec, int idx, const char** out_text)
 {
-	{
-		auto& vector = *static_cast<std::vector<std::string>*>(vec);
-		if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
-		*out_text = vector.at(idx).c_str();
-		return true;
-	}
+	
+	auto& vector = *static_cast<std::vector<std::string>*>(vec);
+	if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
+	*out_text = vector.at(idx).c_str();
+	return true;
 
 }

@@ -94,5 +94,9 @@ void main()
 	}
 	vec4 ambientTerm = calculateAmbientLighting();
 	result += ambientTerm;
+	
+	//vec4 toCamera = normalize(vec4(cameraPos, 1.0) - WorldPos);
+	//float CameraFacingPercentage = dot(toCamera, normal);
+	//FragColor = result * CameraFacingPercentage + vec4(0, 1, 0, 0) * (1 - CameraFacingPercentage);
 	FragColor = result;
 }

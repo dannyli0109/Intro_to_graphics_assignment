@@ -61,6 +61,7 @@ void Mesh::Draw()
 	}
 }
 
+
 void Mesh::Bind()
 {
 	glBindVertexArray(vao);

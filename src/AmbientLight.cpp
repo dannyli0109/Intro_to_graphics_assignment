@@ -23,6 +23,6 @@ void AmbientLight::DrawGui()
 	if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::ColorEdit3("Color", &color.x);
-		ImGui::DragFloat("Intensity", &intensity, 1.0f, 0.0f);
+		ImGui::SliderFloat("Intensity", &intensity, 0.0f, 1.0f);
 	}
 }

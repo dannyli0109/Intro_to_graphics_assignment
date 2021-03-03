@@ -14,11 +14,12 @@ class Entity
 {
 public:
 
-	Entity(std::string name, const std::vector<Component*>& components);
+	Entity(std::string name, const std::vector<Component*>& components, const std::vector<Entity*>& children = {});
 	Entity(const Entity& other) = delete;
 	Entity& operator=(const Entity& other) = delete;
 	~Entity();
 	void Update(float deltaTime);
+	void OnDraw();
 	void Draw();
 	void AddChild(Entity* child);
 	void RemoveChild(Entity* child);

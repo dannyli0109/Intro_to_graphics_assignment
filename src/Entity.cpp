@@ -1,11 +1,16 @@
 #include "Entity.h"
 #include "ShaderProgram.h"
 
-Entity::Entity(std::string name, const std::vector<Component*>& components)
+Entity::Entity(std::string name, const std::vector<Component*>& components, const std::vector<Entity*>& children)
 {
 	this->name = name;
 	this->components = components;
+	this->children = children;
 
+	for (Entity* child : children)
+	{
+		child->parent = this;
+	}
 
 	for (Component* component : components)
 	{
@@ -39,9 +44,16 @@ void Entity::Update(float deltaTime)
 	}
 }
 
+void Entity::OnDraw()
+{
+	for (Component* component : components)
+	{
+		component->OnDraw();
+	}
+}
+
 void Entity::Draw()
 {
-
 	for (Component* component : components)
 	{
 		component->OnDraw();
@@ -56,6 +68,7 @@ void Entity::Draw()
 		child->Draw();
 	}
 }
+
 
 void Entity::AddChild(Entity* child)
 {

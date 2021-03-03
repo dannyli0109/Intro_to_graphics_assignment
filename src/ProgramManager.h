@@ -14,6 +14,8 @@
 #include "PhongShadingMaterial.h"
 #include "ColorShadingMaterial.h"
 #include "AmbientLight.h"
+#include "FrameBuffer.h"
+#include "QuadMesh.h"
 #include <string>
 
 #define WINDOW_WIDTH 1280
@@ -29,6 +31,11 @@ public:
 	Texture* diffuseTexture = nullptr;
 	Texture* normalTexture = nullptr;
 	Texture* specularTexture = nullptr;
+	FrameBuffer* frameBuffer = nullptr;
+	ShaderProgram* outlineShader = nullptr;
+	QuadMesh* quadMesh = nullptr;
+
+	ColorShadingMaterial* outlineTex = nullptr;
 
 	std::vector<Entity*> entities;
 	int selected = 0;
