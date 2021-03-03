@@ -7,11 +7,7 @@ FrameBuffer::FrameBuffer(int width, int height)
 
 void FrameBuffer::Create(int width, int height)
 {
-	if (exists)
-	{
-		glDeleteFramebuffers(1, &fboID);
-		glDeleteTextures(1, &texID);
-	}
+	Destroy();
 	exists = true;
 
 	glGenFramebuffers(1, &fboID);
@@ -29,10 +25,10 @@ void FrameBuffer::Create(int width, int height)
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texID, 0);
 
 
-	glGenRenderbuffers(1, &rboID);
-	glBindRenderbuffer(GL_RENDERBUFFER, rboID);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height); // use a single renderbuffer object for both a depth AND stencil buffer.
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboID); // now actually attach it
+	//glGenRenderbuffers(1, &rboID);
+	//glBindRenderbuffer(GL_RENDERBUFFER, rboID);
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height); // use a single renderbuffer object for both a depth AND stencil buffer.
+	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboID); // now actually attach it
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
 	{
@@ -41,20 +37,14 @@ void FrameBuffer::Create(int width, int height)
 	else
 	{
 		std::cout << "All is despair!" << std::endl;
-		exists = false;
-		glDeleteFramebuffers(1, &fboID);
-		glDeleteTextures(1, &texID);
+		Destroy();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 FrameBuffer::~FrameBuffer()
 {
-	if (exists)
-	{
-		glDeleteFramebuffers(1, &fboID);
-		glDeleteTextures(1, &texID);
-	}
+	Destroy();
 }
 
 FrameBuffer::FrameBuffer(FrameBuffer&& other)
@@ -80,12 +70,7 @@ const FrameBuffer& FrameBuffer::operator=(FrameBuffer&& other)
 		return *this;
 	}
 
-	if (exists)
-	{
-		glDeleteFramebuffers(1, &fboID);
-		glDeleteTextures(1, &texID);
-		glDeleteRenderbuffers(1, &rboID);
-	}
+	Destroy();
 
 
 	this->fboID = other.fboID;
@@ -101,6 +86,17 @@ const FrameBuffer& FrameBuffer::operator=(FrameBuffer&& other)
 void FrameBuffer::Bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, fboID);
+}
+
+void FrameBuffer::Destroy()
+{
+	if (exists)
+	{
+		glDeleteFramebuffers(1, &fboID);
+		glDeleteTextures(1, &texID);
+		//glDeleteRenderbuffers(1, &rboID);
+		exists = false;
+	}
 }
 
 void FrameBuffer::Unbind()

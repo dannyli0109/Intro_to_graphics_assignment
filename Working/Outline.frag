@@ -1,23 +1,12 @@
 #version 450
 
 out vec4 FragColor;
-const float offset = 1.0 / 128.0;
 in vec2 uvs;
 uniform sampler2D colourTexture;
-vec2 blurKernel[9] = {	vec2(-1.0, -1.0),
-						vec2( 0.0, -1.0),
-						vec2( 1.0, -1.0),
-						vec2(-1.0,  0.0),
-						vec2( 0.0,  0.0),
-						vec2( 1.0,  0.0),
-						vec2(-1.0,  1.0),
-						vec2( 0.0,  1.0),
-						vec2( 1.0,  1.0)
-					};
+uniform float thickness;
 
 void main()
 {
-	float thickness = 1.0;
 	vec2 multiplier = thickness * 1.0 / textureSize(colourTexture, 0);
 	vec4 color = texture(colourTexture, uvs);
 	

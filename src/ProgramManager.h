@@ -39,16 +39,18 @@ public:
 	std::vector<Entity*> entities;
 	int selected = 0;
 	bool Initialise();
-	void InitGUI();
 	void Run();
 	void ShutDown();
 	float time = 0;
 	float deltaTime = 0;
 
 private:
+	void InitGUI();
 	void Update();
+	void UpdateGUI();
 	void Draw();
-
+	void DrawGUI();
+	void DestroyGUI();
 
 	static bool VectorOfStringGetter(void* data, int n, const char** out_text);
 };

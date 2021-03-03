@@ -19,6 +19,7 @@ public:
 
 
 	void Bind();
+	void Destroy();
 
 	static void Unbind();
 
@@ -27,7 +28,7 @@ public:
 private:
 	GLuint fboID;
 	GLuint texID;
-	GLuint rboID;
+	//GLuint rboID;
 
 	bool exists = false;
 };

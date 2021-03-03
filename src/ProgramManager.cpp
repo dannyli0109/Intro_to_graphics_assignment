@@ -34,6 +34,7 @@ bool ProgramManager::Initialise()
 	resourceManager->AddMesh("cube", new CubeMeshData());
 	resourceManager->AddMesh("quad", new QuadMeshData());
 
+	// binding the texture unit for for phong lighting shader
 	phongShader->SetUniform("diffuseTexture", 0);
 	phongShader->SetUniform("specularTexture", 1);
 	phongShader->SetUniform("normalTexture", 2);
@@ -155,11 +156,8 @@ void ProgramManager::ShutDown()
 	}
 
 	resourceManager->Destroy();
+	DestroyGUI();
 
-	// Cleanup GUI related
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
 }
 
 void ProgramManager::Update()
@@ -177,6 +175,11 @@ void ProgramManager::Update()
 		frameBuffer->Create(size.x, size.y);
 	}
 
+	UpdateGUI();
+}
+
+void ProgramManager::UpdateGUI()
+{
 	// Create GUI Frame (window)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -221,6 +224,7 @@ void ProgramManager::Draw()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	outlineShader->UseShader();
+	outlineShader->SetUniform("thickness", 2.0f);
 	frameBuffer->BindTexture();
 
 	MeshData* quadMesh = resourceManager->GetMesh("quad");
@@ -239,6 +243,11 @@ void ProgramManager::Draw()
 		entities[i]->Draw();
 	}
 
+	DrawGUI();
+}
+
+void ProgramManager::DrawGUI()
+{
 	// GUI Related
 	// Display all entity as list box and change the selected item accordingly
 	std::vector<std::string> entityNames;
@@ -260,6 +269,14 @@ void ProgramManager::Draw()
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void ProgramManager::DestroyGUI()
+{
+	// Cleanup GUI related
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
 bool ProgramManager::VectorOfStringGetter(void* vec, int idx, const char** out_text)
