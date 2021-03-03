@@ -172,9 +172,6 @@
     <ClInclude Include="src\stb_image.h">
       <Filter>Libraries\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\tiny_obj_loader.h">
-      <Filter>Libraries</Filter>
-    </ClInclude>
     <ClInclude Include="src\Utilities.h">
       <Filter>Source Files</Filter>
     </ClInclude>
