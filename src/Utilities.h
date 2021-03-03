@@ -4,9 +4,10 @@
 #include <iostream>
 #include "Graphics.h"
 #include <vector>
+#include "FrameBuffer.h"
 
 std::string LoadFileAsString(std::string filename);
-void OnWindowSizeChange(GLFWwindow* window, int newWidth, int newHeight);
+//void OnWindowSizeChange(GLFWwindow* window, int newWidth, int newHeight, FrameBuffer* frameBuffer);
 std::vector<std::string> Split(const std::string& s, std::string delimiter);
 void ParseObj(
 	std::string filename,

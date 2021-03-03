@@ -16,6 +16,7 @@ public:
 	float GetAspectRatio();
 	bool Created();
 	int ShouldClose();
+	bool ShouldUpdateSize();
 
 	void SetSizeCallback(GLFWwindowsizefun callback);
 
@@ -25,5 +26,7 @@ public:
 private:
 	GLFWwindow* glfwWindow = nullptr;
 	bool created = false;
+	int width;
+	int height;
 };
 

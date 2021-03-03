@@ -2,6 +2,8 @@
 
 Window::Window(int width, int height, std::string name)
 {
+	this->width = width;
+	this->height = height;
 	created = Init(width, height, name);
 }
 
@@ -69,6 +71,15 @@ bool Window::Created()
 int Window::ShouldClose()
 {
 	return glfwWindowShouldClose(glfwWindow);
+}
+
+bool Window::ShouldUpdateSize()
+{
+	glm::vec2 size = GetSize();
+	if (size.x == width && size.y == height) return false;
+	width = size.x;
+	height = size.y;
+	return true;
 }
 
 void Window::SetSizeCallback(GLFWwindowsizefun callback)

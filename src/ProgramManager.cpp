@@ -33,10 +33,19 @@ bool ProgramManager::Initialise()
 
 	glm::vec2 windowSize = window->GetSize();
 	frameBuffer = DBG_NEW FrameBuffer(windowSize.x, windowSize.y);
-	window->SetSizeCallback(OnWindowSizeChange);
+	//window->SetSizeCallback([](GLFWwindow* window, int newWidth, int newHeight)
+	//	{
+	//		glViewport(0, 0, newWidth, newHeight);
+	//		frameBuffer->Create(newWidth, newHeight);
+	//	}
+	//);
+
 	phongShading = DBG_NEW ShaderProgram("Plain.vert", "Plain.frag");
 	colorShading = DBG_NEW ShaderProgram("Light.vert", "Light.frag");
 	outlineShader = DBG_NEW ShaderProgram("Outline.vert", "Outline.frag");
+
+
+	// TODO Load textures and mesh to a map and use a pointer to avoid loading the same thing multiple times
 
 	diffuseTexture = DBG_NEW Texture("soulspear\\soulspear_diffuse.tga");
 	phongShading->SetUniform("diffuseTexture", 0);
@@ -137,8 +146,9 @@ void ProgramManager::ShutDown()
 	delete phongShading;
 	delete colorShading;
 	delete outlineShader;
-	delete frameBuffer;
 	delete camera;
+
+	delete frameBuffer;
 	delete quadMesh;
 	for (Entity* entity : entities)
 	{
@@ -157,6 +167,12 @@ void ProgramManager::ShutDown()
 
 void ProgramManager::Update()
 {
+	if (window->ShouldUpdateSize())
+	{
+		glm::vec2 size = window->GetSize();
+		glViewport(0, 0, size.x, size.y);
+		frameBuffer->Create(size.x, size.y);
+	}
 	deltaTime = glfwGetTime() - time;
 	time = glfwGetTime();
 	// GUI

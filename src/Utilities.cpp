@@ -22,10 +22,11 @@ std::string LoadFileAsString(std::string filename)
 	}
 }
 
-void OnWindowSizeChange(GLFWwindow* window, int newWidth, int newHeight)
-{
-	glViewport(0, 0, newWidth, newHeight);
-}
+//void OnWindowSizeChange(GLFWwindow* window, int newWidth, int newHeight, FrameBuffer* frameBuffer)
+//{
+//	glViewport(0, 0, newWidth, newHeight);
+//	frameBuffer->Create(newWidth, newHeight);
+//}
 
 std::vector<std::string> Split(const std::string& s, std::string delimiter)
 {
