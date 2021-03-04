@@ -17,19 +17,18 @@ public:
 	virtual ~MeshData();
 	MeshData(const MeshData& other) = delete;
 	MeshData& operator= (const MeshData& other) = delete;
+	virtual void SetName(std::string name);
+	virtual std::string GetName();
 	virtual void Draw();
 	virtual void Bind();
 	static void Unbind();
-	std::string GetName();
 
 protected:
-	MeshData(std::string name) {
-		this->name = name;
-	};
+	MeshData() = default;
 	GLuint verticesID;
 	GLuint indicesID;
 	GLuint vao;
 	GLuint triCount;
-	std::string name;
+	std::string name = "";
 };
 

@@ -28,6 +28,7 @@ glm::mat4 Camera::GetViewMatrix()
 
 glm::mat4 Camera::GetProjectionMatrix(float w, float h)
 {
+	if (h == 0) return glm::mat4(1);
 	return glm::perspective(fovY, w / h, near, far);
 }
 

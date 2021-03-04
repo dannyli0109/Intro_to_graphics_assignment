@@ -6,6 +6,6 @@ class ObjMeshData :
 	public MeshData
 {
 public:
-	ObjMeshData(std::string name, std::string fileName);
+	ObjMeshData(std::string fileName);
 };
 

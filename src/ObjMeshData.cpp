@@ -1,6 +1,6 @@
 #include "ObjMeshData.h"
 
-ObjMeshData::ObjMeshData(std::string name, std::string fileName) : MeshData(name)
+ObjMeshData::ObjMeshData(std::string fileName)
 {
 	std::vector<Vertex> vertices;
 	std::vector<glm::vec3> verts;

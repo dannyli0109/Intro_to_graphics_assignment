@@ -65,9 +65,6 @@
     <ClCompile Include="src\Material.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mesh.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="src\Entity.cpp">
       <Filter>Components</Filter>
     </ClCompile>
@@ -180,9 +177,6 @@
     </ClInclude>
     <ClInclude Include="src\Utilities.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mesh.h">
-      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="src\PhongShadingMaterial.h">
       <Filter>Components</Filter>

@@ -168,7 +168,6 @@
     <ClCompile Include="src\EntryPoint.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Material.cpp" />
-    <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\PhongShadingMaterial.cpp" />
     <ClCompile Include="src\PointLight.cpp" />
     <ClCompile Include="src\ProgramManager.cpp" />
@@ -204,7 +203,6 @@
     <ClInclude Include="src\khrplatform.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Matrices.h" />
-    <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\PhongShadingMaterial.h" />
     <ClInclude Include="src\PointLight.h" />
     <ClInclude Include="src\ProgramManager.h" />

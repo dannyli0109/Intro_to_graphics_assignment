@@ -4,17 +4,31 @@
 PhongShadingMaterial::PhongShadingMaterial(
 	ShaderProgram* shader, 
 	glm::vec3 ka, glm::vec3 kd, glm::vec3 ks, float specularPower, 
-	Texture* diffuseMap, Texture* normalMap, Texture* specularMap) : Material(shader)
+	std::string diffuseId, std::string normalId, std::string specularId) : Material(shader)
 {
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	this->name = "Phong Shading Material";
 
 	this->ka = ka;
 	this->kd = kd;
 	this->ks = ks;
 	this->specularPower = specularPower;
-	this->diffuseMap = diffuseMap;
-	this->normalMap = normalMap;
-	this->specularMap = specularMap;
+	this->diffuseMap = resourceManager->GetTexture(diffuseId);
+	this->normalMap = resourceManager->GetTexture(normalId);
+	this->specularMap = resourceManager->GetTexture(specularId);
+
+	this->selectedDiffuse = resourceManager->GetTextureIndex(diffuseId);
+	this->selectedNormal = resourceManager->GetTextureIndex(normalId);
+	this->selectedSpecular = resourceManager->GetTextureIndex(specularId);
+}
+
+void PhongShadingMaterial::Update(float deltaTime)
+{
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+
+	this->diffuseMap = resourceManager->GetTexture(selectedDiffuse);
+	this->normalMap = resourceManager->GetTexture(selectedNormal);
+	this->specularMap = resourceManager->GetTexture(selectedSpecular);
 }
 
 
@@ -25,9 +39,18 @@ void PhongShadingMaterial::OnDraw()
 	shader->SetUniform("ks", ks);
 	shader->SetUniform("specularPower", specularPower);
 
-	diffuseMap->Bind(0);
-	specularMap->Bind(1);
-	normalMap->Bind(2);
+	if (diffuseMap)
+	{
+		diffuseMap->Bind(0);
+	}	
+	if (specularMap)
+	{
+		specularMap->Bind(1);
+	}
+	if (normalMap)
+	{
+		normalMap->Bind(2);
+	}
 }
 
 void PhongShadingMaterial::DrawGui()
@@ -45,27 +68,42 @@ void PhongShadingMaterial::DrawGui()
 		ks.z = ks.x;
 		ImGui::SliderFloat("Specular Power", &specularPower, 0.01f, 512.0f);
 
+		ResourceManager* resourceManager = ResourceManager::GetInstance();
+		std::vector<std::string> textureNames = resourceManager->GetTextureNames();
+
 		if (ImGui::TreeNodeEx("Diffuse Texture"))
 		{
-			float width = ImGui::GetContentRegionAvail().x;
-			float aspect = diffuseMap->GetWidth() / diffuseMap->GetHeight();
-			ImGui::Image((void*)(diffuseMap->GetId()), ImVec2(width, width / aspect));
+			ImGui::ListBox("Textures###1", &selectedDiffuse, VectorOfStringGetter, static_cast<void*>(&textureNames), textureNames.size());
+			if (diffuseMap)
+			{
+				float width = ImGui::GetContentRegionAvail().x;
+				float aspect = diffuseMap->GetWidth() / diffuseMap->GetHeight();
+				ImGui::Image((void*)(diffuseMap->GetId()), ImVec2(width, width / aspect));
+			}
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNodeEx("Normal Texture"))
 		{
-			float width = ImGui::GetContentRegionAvail().x;
-			float aspect = normalMap->GetWidth() / normalMap->GetHeight();
-			ImGui::Image((void*)(normalMap->GetId()), ImVec2(width, width / aspect));
+			ImGui::ListBox("Textures###2", &selectedNormal, VectorOfStringGetter, static_cast<void*>(&textureNames), textureNames.size());
+			if (normalMap)
+			{
+				float width = ImGui::GetContentRegionAvail().x;
+				float aspect = normalMap->GetWidth() / normalMap->GetHeight();
+				ImGui::Image((void*)(normalMap->GetId()), ImVec2(width, width / aspect));
+			}
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNodeEx("Specular Texture"))
 		{
-			float width = ImGui::GetContentRegionAvail().x;
-			float aspect = specularMap->GetWidth() / specularMap->GetHeight();
-			ImGui::Image((void*)(specularMap->GetId()), ImVec2(width, width / aspect));
+			ImGui::ListBox("Textures###3", &selectedSpecular, VectorOfStringGetter, static_cast<void*>(&textureNames), textureNames.size());
+			if (specularMap)
+			{
+				float width = ImGui::GetContentRegionAvail().x;
+				float aspect = specularMap->GetWidth() / specularMap->GetHeight();
+				ImGui::Image((void*)(specularMap->GetId()), ImVec2(width, width / aspect));
+			}
 			ImGui::TreePop();
 		}
 	}

@@ -1,6 +1,5 @@
 #pragma once
 #include "Graphics.h"
-#include "Mesh.h"
 #include "Texture.h"
 #include <vector>
 #include "Component.h"

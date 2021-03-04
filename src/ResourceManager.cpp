@@ -13,33 +13,90 @@ ResourceManager* ResourceManager::CreateInstance()
 	}
 	return instance;
 }
-void ResourceManager::AddMesh(MeshData* mesh)
+void ResourceManager::AddMesh(std::string id, MeshData* mesh)
 {
+	int index = meshes.size();
 	meshes.push_back(mesh);
+	meshIds[id] = index;
+	mesh->SetName(id);
 }
-void ResourceManager::AddTexture(std::string name, Texture* texture)
+void ResourceManager::AddTexture(std::string id, Texture* texture)
 {
-	textureDictionary[name] = texture;
+	int index = textures.size();
+	textures.push_back(texture);
+	textureIds[id] = index;
+	texture->SetName(id);
 }
-Texture* ResourceManager::GetTexture(std::string name)
+
+Texture* ResourceManager::GetTexture(std::string id)
 {
-	return textureDictionary[name];
+	int index = textureIds[id];
+	return GetTexture(index);
 }
-MeshData* ResourceManager::GetMesh(int intex)
+
+MeshData* ResourceManager::GetMesh(std::string id)
 {
-	return meshes[intex];
+	int index = meshIds[id];
+	return GetMesh(index);
 }
+
+Texture* ResourceManager::GetTexture(int index)
+{
+	if (index < 0 || index > textures.size() - 1) return nullptr;
+	return textures[index];
+}
+
+MeshData* ResourceManager::GetMesh(int index)
+{
+	if (index < 0 || index > textures.size() - 1) return nullptr;
+	return meshes[index];
+}
+
+int ResourceManager::GetTextureIndex(std::string id)
+{
+	return textureIds[id];
+}
+
+int ResourceManager::GetMeshIndex(std::string id)
+{
+	return meshIds[id];
+}
+
+std::vector<std::string> ResourceManager::GetMeshNames()
+{
+	std::vector<std::string> meshNames;
+	meshNames.reserve(meshes.size());
+	for (MeshData* mesh : meshes)
+	{
+		meshNames.push_back(mesh->GetName());
+	}
+	return meshNames;
+}
+
+std::vector<std::string> ResourceManager::GetTextureNames()
+{
+	std::vector<std::string> textureNames;
+	textureNames.reserve(textures.size());
+	for (Texture* texture : textures)
+	{
+		textureNames.push_back(texture->GetName());
+	}
+	return textureNames;
+}
+
+
 const std::vector<MeshData*>& ResourceManager::GetMeshes()
 {
 	return meshes;
 }
-const std::map<std::string, Texture*>& ResourceManager::GetTextureDict()
+const std::vector<Texture*>& ResourceManager::GetTextures()
 {
-	return textureDictionary;
+	return textures;
 }
+
 void ResourceManager::DrawGUI()
 {
-	if (meshes.size() > selectedMesh)
+	/*if (meshes.size() > selectedMesh)
 	{
 		std::vector<std::string> meshNames;
 		for (MeshData* mesh : meshes)
@@ -48,13 +105,13 @@ void ResourceManager::DrawGUI()
 		}
 
 		ImGui::ListBox("Meshes", &selectedMesh, VectorOfStringGetter, static_cast<void*>(&meshNames), meshNames.size());
-	}
+	}*/
 }
 void ResourceManager::Destroy()
 {
-	for (auto it = textureDictionary.begin(); it != textureDictionary.end(); it++)
+	for (Texture* texture : textures)
 	{
-		delete it->second;
+		delete texture;
 	}
 
 	for (MeshData* mesh : meshes)

@@ -26,13 +26,16 @@ bool ProgramManager::Initialise()
 	outlineShader = new ShaderProgram("Outline.vert", "Outline.frag");	
 
 	// loading the texture and mesh in advanced so that they can be reused later
+
+	resourceManager->AddTexture("blank", new Texture("soulspear\\black.jpg"));
 	resourceManager->AddTexture("soulspear_diffuse", new Texture("soulspear\\soulspear_diffuse.tga"));
 	resourceManager->AddTexture("soulspear_specular", new Texture("soulspear\\soulspear_specular.tga"));
 	resourceManager->AddTexture("soulspear_normal", new Texture("soulspear\\soulspear_normal.tga"));
 
-	resourceManager->AddMesh(new ObjMeshData("soulspear", "soulspear/soulspear.obj"));
-	resourceManager->AddMesh(new CubeMeshData("cube"));
-	resourceManager->AddMesh(new QuadMeshData("quad"));
+
+	resourceManager->AddMesh("soulspear", new ObjMeshData("soulspear/soulspear.obj"));
+	resourceManager->AddMesh("cube", new CubeMeshData());
+	resourceManager->AddMesh("quad", new QuadMeshData());
 
 	// binding the texture unit for for phong lighting shader
 	phongShader->SetUniform("diffuseTexture", 0);
@@ -45,16 +48,16 @@ bool ProgramManager::Initialise()
 			"Soul Spear",
 			{
 				new Transform({0, 0, 0}, {0, 0, 0}, {1, 1, 1}),
-				new MeshContainer(0),
+				new MeshContainer("soulspear"),
 				new PhongShadingMaterial(
 					phongShader, 
 					glm::vec3(0.0f, 0.0f, 0.0f),
 					glm::vec3(0.8f, 0.8f, 0.8f),
 					glm::vec3(0.5f, 0.5f, 0.5f),
 					20.0f,
-					resourceManager->GetTexture("soulspear_diffuse"),
-					resourceManager->GetTexture("soulspear_normal"),
-					resourceManager->GetTexture("soulspear_specular")
+					"soulspear_diffuse",
+					"soulspear_normal",
+					"soulspear_specular"
 				)
 			}
 		)
@@ -70,7 +73,7 @@ bool ProgramManager::Initialise()
 					{ 1.0f, 1.0f, 1.0f }, 
 					20.0f
 				),
-				new MeshContainer(1),
+				new MeshContainer("cube"),
 				new ColorShadingMaterial(
 					colorShader,
 					{ 1.0f, 1.0f, 1.0f }
@@ -89,7 +92,7 @@ bool ProgramManager::Initialise()
 					{1.0f, 1.0f, 1.0f}, 
 					20.0f
 				),
-				new MeshContainer(1),
+				new MeshContainer("cube"),
 				new ColorShadingMaterial(
 					colorShader,
 					{1.0f, 1.0f, 1.0f}
@@ -229,7 +232,7 @@ void ProgramManager::Draw()
 	outlineShader->SetUniform("thickness", 2.0f);
 	frameBuffer->BindTexture();
 
-	MeshData* quadMesh = resourceManager->GetMesh(2);
+	MeshData* quadMesh = resourceManager->GetMesh("quad");
 	quadMesh->Bind();
 	quadMesh->Draw();
 

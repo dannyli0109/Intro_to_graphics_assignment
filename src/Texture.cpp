@@ -42,6 +42,16 @@ Texture::~Texture()
 }
 
 
+std::string Texture::GetName()
+{
+	return name;
+}
+
+void Texture::SetName(std::string name)
+{
+	this->name = name;
+}
+
 void Texture::Bind(int textureUnit)
 {
 	glActiveTexture(GL_TEXTURE0 + textureUnit);

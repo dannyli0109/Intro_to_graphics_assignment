@@ -1,10 +1,10 @@
 #include "MeshContainer.h"
 
-MeshContainer::MeshContainer(int index)
+MeshContainer::MeshContainer(std::string id)
 {
 	this->name = "Mesh Container";
-	this->selectedMesh = index;
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	this->selectedMesh = resourceManager->GetMeshIndex(id);
 	this->data = resourceManager->GetMesh(this->selectedMesh);
 }
 
@@ -25,15 +25,9 @@ void MeshContainer::DrawGui()
 	if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ResourceManager* resourceManager = ResourceManager::GetInstance();
-		std::vector<MeshData*> meshes = resourceManager->GetMeshes();
-		if (meshes.size() > selectedMesh)
+		std::vector<std::string> meshNames = resourceManager->GetMeshNames();
+		if (meshNames.size() > selectedMesh)
 		{
-			std::vector<std::string> meshNames;
-			for (MeshData* mesh : meshes)
-			{
-				meshNames.push_back(mesh->GetName());
-			}
-
 			ImGui::ListBox("Meshes", &selectedMesh, VectorOfStringGetter, static_cast<void*>(&meshNames), meshNames.size());
 		}
 	}

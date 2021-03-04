@@ -7,7 +7,7 @@ class MeshContainer :
 	public Component
 {
 public:
-	MeshContainer(int index);
+	MeshContainer(std::string id);
 	virtual void Update(float deltaTime) override;
 	virtual void Draw() override;
 	virtual void DrawGui() override;
