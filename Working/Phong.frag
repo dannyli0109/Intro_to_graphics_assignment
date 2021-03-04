@@ -10,8 +10,8 @@ in vec3 Color;
 // texture
 in vec2 UVs;
 uniform sampler2D diffuseTexture;
-uniform sampler2D specularTexture;
 uniform sampler2D normalTexture;
+uniform sampler2D specularTexture;
 
 // diffuse
 in vec4 WorldPos;

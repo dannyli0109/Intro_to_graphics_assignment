@@ -12,6 +12,8 @@ class ShaderProgram
 
 	bool created = false;
 
+	std::string name = "";
+
 public:
 	~ShaderProgram();
 
@@ -30,4 +32,7 @@ public:
 	void SetUniform(std::string varName, glm::vec3 value);
 
 	static GLuint activeShader;
+
+	std::string GetName();
+	void SetName(std::string name);
 };

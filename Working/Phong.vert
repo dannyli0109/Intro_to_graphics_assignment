@@ -24,10 +24,12 @@ void main()
 	Color = VertColor;
 	UVs = VertUVs;
 	
+	vec3 t = normalize(vec3(modelMatrix * vec4(VertTangent, 0.0)));
+	vec3 n = normalize(vec3(modelMatrix * vec4(VertNormal, 0.0)));
+	t = normalize(t - dot(t,n) * n);
+	vec3 b = cross(n, t);
 	tbn = mat3(
-		normalize((modelMatrix * vec4(VertTangent, 0))).xyz,
-		normalize((modelMatrix * vec4(VertBitangent, 0))).xyz,
-		normalize((modelMatrix * vec4(VertNormal, 0))).xyz
+		t, b, n
 	);
 	WorldPos = modelMatrix * vec4(Position,1);
 	gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * vec4(Position, 1);

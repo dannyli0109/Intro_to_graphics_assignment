@@ -10,6 +10,7 @@
 #include "Texture.h"
 #include "GUI.h"
 #include "PhongShadingMaterial.h"
+#include "PhongFlatShadingMaterial.h"
 #include "ColorShadingMaterial.h"
 #include "AmbientLight.h"
 #include "FrameBuffer.h"
@@ -29,8 +30,9 @@ class ProgramManager
 {
 public:
 	Window* window = nullptr;
-	ShaderProgram* phongShader = nullptr;
-	ShaderProgram* colorShader = nullptr;
+	/*ShaderProgram* phongShader = nullptr;
+	ShaderProgram* phongFlatShader = nullptr;
+	ShaderProgram* colorShader = nullptr;*/
 	Camera* camera = nullptr;
 	FrameBuffer* frameBuffer = nullptr;
 	ShaderProgram* outlineShader = nullptr;

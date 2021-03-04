@@ -21,11 +21,14 @@ bool ProgramManager::Initialise()
 
 	frameBuffer = new FrameBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	phongShader = new ShaderProgram("Phong.vert", "Phong.frag");
-	colorShader = new ShaderProgram("Color.vert", "Color.frag");
-	outlineShader = new ShaderProgram("Outline.vert", "Outline.frag");	
-
 	// loading the texture and mesh in advanced so that they can be reused later
+
+	resourceManager->AddShader("phong", new ShaderProgram("Phong.vert", "Phong.frag"));
+	resourceManager->AddShader("phongFlat", new ShaderProgram("PhongFlat.vert", "PhongFlat.frag"));
+	resourceManager->AddShader("color", new ShaderProgram("Color.vert", "Color.frag"));
+	// resourceManager->AddShader("outline", new ShaderProgram("Outline.vert", "Outline.frag"));
+
+	outlineShader = new ShaderProgram("Outline.vert", "Outline.frag");
 
 	resourceManager->AddTexture("blank", new Texture("soulspear\\black.jpg"));
 	resourceManager->AddTexture("soulspear_diffuse", new Texture("soulspear\\soulspear_diffuse.tga"));
@@ -36,21 +39,26 @@ bool ProgramManager::Initialise()
 	resourceManager->AddMesh("soulspear", new ObjMeshData("soulspear/soulspear.obj"));
 	resourceManager->AddMesh("cube", new CubeMeshData());
 	resourceManager->AddMesh("quad", new QuadMeshData());
+	//resourceManager->AddMesh("bunny", new ObjMeshData("stanford/Bunny.obj"));
+	//resourceManager->AddMesh("buddha", new ObjMeshData("stanford/Buddha.obj"));
+	//resourceManager->AddMesh("dragon", new ObjMeshData("stanford/Dragon.obj"));
+	resourceManager->AddMesh("lucy", new ObjMeshData("stanford/Lucy.obj"));
 
 	// binding the texture unit for for phong lighting shader
-	phongShader->SetUniform("diffuseTexture", 0);
-	phongShader->SetUniform("specularTexture", 1);
-	phongShader->SetUniform("normalTexture", 2);
+	//{
+	//	phongShader->SetUniform("diffuseTexture", 0);
+	//	phongShader->SetUniform("specularTexture", 1);
+	//	phongShader->SetUniform("normalTexture", 2);
+	//}
 
 	camera = new Camera(glm::vec3(0, 2.0, 10.0f), glm::vec3(0, 1.0f, 0), 270.0f, 0.0f, glm::pi<float>() * 0.25f, window->GetAspectRatio(), 0.1f, 100.0f);
 	entities.push_back(
 		new Entity(
 			"Soul Spear",
 			{
-				new Transform({0, 0, 0}, {0, 0, 0}, {1, 1, 1}),
+				new Transform({2, 0, 0}, {0, 0, 0}, {1, 1, 1}),
 				new MeshContainer("soulspear"),
 				new PhongShadingMaterial(
-					phongShader, 
 					glm::vec3(0.0f, 0.0f, 0.0f),
 					glm::vec3(0.8f, 0.8f, 0.8f),
 					glm::vec3(0.5f, 0.5f, 0.5f),
@@ -65,17 +73,34 @@ bool ProgramManager::Initialise()
 
 	entities.push_back(
 		new Entity(
+			"Dragon",
+			{
+				new Transform({-2, 0, 0}, {0, 0, 0}, {0.5, 0.5, 0.5}),
+				new MeshContainer("lucy"),
+				new PhongFlatShadingMaterial(
+					glm::vec3(0.1f, 0.1f, 0.1f),
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					64.0f,
+					glm::vec3(1.0f, 1.0f, 1.0f),
+					glm::vec3(1.0f, 1.0f, 1.0f)
+				)
+			}
+		)
+	);
+
+	entities.push_back(
+		new Entity(
 			"Point Light1",
 			{
 				new Transform({-3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
 				new PointLight(
-					{ phongShader },
+					{ resourceManager->GetShader("phong"), resourceManager->GetShader("phongFlat") },
 					{ 1.0f, 1.0f, 1.0f }, 
 					20.0f
 				),
 				new MeshContainer("cube"),
 				new ColorShadingMaterial(
-					colorShader,
 					{ 1.0f, 1.0f, 1.0f }
 				)
 			}
@@ -88,25 +113,38 @@ bool ProgramManager::Initialise()
 			{
 				new Transform({3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
 				new PointLight(
-					{ phongShader },
+					{ resourceManager->GetShader("phong"), resourceManager->GetShader("phongFlat") },
 					{1.0f, 1.0f, 1.0f}, 
 					20.0f
 				),
 				new MeshContainer("cube"),
 				new ColorShadingMaterial(
-					colorShader,
-					{1.0f, 1.0f, 1.0f}
+					{ 1.0f, 1.0f, 1.0f }
 				)
 			}
 		)
 	);
+
+	//entities.push_back(
+	//	new Entity(
+	//		"Bunny",
+	//		{
+	//			new Transform({3.0f, 1.5f, 3.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
+	//			new MeshContainer("lucy"),
+	//			new ColorShadingMaterial(
+	//				colorShader,
+	//				{1.0f, 1.0f, 1.0f}
+	//			)
+	//		}
+	//	)
+	//);
 
 	entities.push_back(
 		new Entity(
 			"Ambient Light",
 			{
 				new AmbientLight(
-					{ phongShader },
+					{ resourceManager->GetShader("phong"), resourceManager->GetShader("phongFlat") },
 					{ 1.0f, 1.0f, 1.0f },
 					1.0f
 				)
@@ -148,8 +186,6 @@ void ProgramManager::ShutDown()
 	delete window;
 	delete camera;
 
-	delete phongShader;
-	delete colorShader;
 	delete outlineShader;
 
 	delete frameBuffer;
@@ -204,9 +240,11 @@ void ProgramManager::Draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	camera->HandleInput(deltaTime, window);
-	camera->Update(deltaTime, window, phongShader);
-	camera->Update(deltaTime, window, colorShader);
-
+	std::vector<ShaderProgram*> shaders = resourceManager->GetShaders();
+	for (ShaderProgram* shader : shaders)
+	{
+		camera->Update(deltaTime, window, shader);
+	}
 	for (Entity* entity : entities)
 	{
 		entity->Update(deltaTime);

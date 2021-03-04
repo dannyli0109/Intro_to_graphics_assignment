@@ -84,24 +84,33 @@ void ParseObj(
 					{
 						unsigned short vertIndex;
 						std::istringstream vi(elements[0]);
-						vi >> vertIndex;
-						vis.push_back(vertIndex - 1);
+						if (vi.str() != "")
+						{
+							vi >> vertIndex;
+							vis.push_back(vertIndex - 1);
+						}
 					}
 
 					if (elements.size() > 1)
 					{
 						unsigned short textureIndex;
 						std::istringstream ti(elements[1]);
-						ti >> textureIndex;
-						tis.push_back(textureIndex - 1);
+						if (ti.str() != "")
+						{
+							ti >> textureIndex;
+							tis.push_back(textureIndex - 1);
+						}
 					}
 
 					if (elements.size() > 2)
 					{
 						unsigned short normalIndex;
 						std::istringstream ni(elements[2]);
-						ni >> normalIndex;
-						nis.push_back(normalIndex - 1);
+						if (ni.str() != "")
+						{
+							ni >> normalIndex;
+							nis.push_back(normalIndex - 1);
+						}
 					}
 				}
 

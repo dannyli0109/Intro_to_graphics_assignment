@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\PhongFlatShadingMaterial.cpp" />
     <ClCompile Include="src\QuadMeshData.cpp" />
     <ClCompile Include="src\MeshContainer.cpp" />
     <ClCompile Include="src\CubeMeshData.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\PhongFlatShadingMaterial.h" />
     <ClInclude Include="src\QuadMeshData.h" />
     <ClInclude Include="src\MeshContainer.h" />
     <ClInclude Include="src\CubeMeshData.h" />

@@ -118,4 +118,12 @@ void ShaderProgram::SetUniform(std::string varName, glm::vec3 value)
 	UseShader();
 	glUniform3fv(varLoc, 1, &value[0]);
 }
+std::string ShaderProgram::GetName()
+{
+	return name;
+}
+void ShaderProgram::SetName(std::string name)
+{
+	this->name = name;
+}
 GLuint ShaderProgram::activeShader = 0;

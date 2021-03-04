@@ -2,12 +2,18 @@
 #include "ShaderProgram.h"
 
 PhongShadingMaterial::PhongShadingMaterial(
-	ShaderProgram* shader, 
 	glm::vec3 ka, glm::vec3 kd, glm::vec3 ks, float specularPower, 
-	std::string diffuseId, std::string normalId, std::string specularId) : Material(shader)
+	std::string diffuseId, std::string normalId, std::string specularId) : Material()
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	this->name = "Phong Shading Material";
+
+	this->shader = resourceManager->GetShader("phong");
+
+	this->shader->SetUniform("diffuseTexture", 0);
+	this->shader->SetUniform("normalTexture", 1);
+	this->shader->SetUniform("specularTexture", 2);
+
 
 	this->ka = ka;
 	this->kd = kd;
@@ -43,13 +49,13 @@ void PhongShadingMaterial::OnDraw()
 	{
 		diffuseMap->Bind(0);
 	}	
-	if (specularMap)
-	{
-		specularMap->Bind(1);
-	}
 	if (normalMap)
 	{
-		normalMap->Bind(2);
+		normalMap->Bind(1);
+	}
+	if (specularMap)
+	{
+		specularMap->Bind(2);
 	}
 }
 

@@ -5,10 +5,10 @@ class ShaderProgram;
 class Material : public Component
 {
 public:
-	Material(ShaderProgram* shader);
+	Material();
 	ShaderProgram* GetShader();
 	virtual void OnDraw();
 protected:
-	ShaderProgram* shader;
+	ShaderProgram* shader = nullptr;
 };
 

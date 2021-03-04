@@ -9,7 +9,6 @@ class PhongShadingMaterial :
 {
 public:
 	PhongShadingMaterial(
-		ShaderProgram* shader,
 		glm::vec3 ka, glm::vec3 kd, glm::vec3 ks, float specularPower,
 		std::string diffuseId,
 		std::string normalId,

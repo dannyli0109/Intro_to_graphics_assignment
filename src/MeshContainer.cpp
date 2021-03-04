@@ -16,8 +16,11 @@ void MeshContainer::Update(float deltaTime)
 
 void MeshContainer::Draw()
 {
-	data->Bind();
-	data->Draw();
+	if (data)
+	{
+		data->Bind();
+		data->Draw();
+	}
 }
 
 void MeshContainer::DrawGui()
