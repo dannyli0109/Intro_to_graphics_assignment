@@ -35,6 +35,8 @@ bool ProgramManager::Initialise()
 	resourceManager->AddTexture("soulspear_normal", new Texture("soulspear\\soulspear_normal.tga"));
 
 	resourceManager->AddMesh("soulspear", new ObjMeshData("soulspear/soulspear.obj"));
+	resourceManager->AddMesh("bunny", new ObjMeshData("stanford/bunny.obj"));
+
 	resourceManager->AddMesh("cube", new CubeMeshData());
 	resourceManager->AddMesh("quad", new QuadMeshData());
 
@@ -62,10 +64,10 @@ bool ProgramManager::Initialise()
 
 	entities.push_back(
 		new Entity(
-			"Soul Spear Flat",
+			"Bunny",
 			{
-				new Transform({-3.0f,-0.6f,-2.0f}, {0, 0, 0}, {1, 1, 1}),
-				new MeshContainer("soulspear"),
+				new Transform({-3.0f,-0.6f,-2.0f}, {0, 0, 0}, {0.5f, 0.5f, 0.5f}),
+				new MeshContainer("bunny"),
 				new PhongFlatShadingMaterial(
 					glm::vec3(0.1f, 0.1f, 0.1f),
 					glm::vec3(1.0f, 1.0f, 1.0f),
