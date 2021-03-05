@@ -5,6 +5,10 @@ class FrameBuffer
 {
 
 public:
+	/**
+	 * Frame buffer, instead of render the pixel onto the screen, we use frame buffer to do post processing and other effects.
+	 * 
+	 */
 	FrameBuffer() {}
 	FrameBuffer(int width, int height);
 	void Create(int width, int height);

@@ -1,5 +1,9 @@
 #include "CubeMeshData.h"
 
+/**
+ * Cube mesh data.
+ * 
+ */
 CubeMeshData::CubeMeshData()
 {
 	std::vector<Vertex> vertices = {

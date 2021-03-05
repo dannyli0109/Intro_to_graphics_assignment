@@ -59,9 +59,6 @@
     <ClCompile Include="src\Utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="src\Material.cpp">
       <Filter>Components</Filter>
     </ClCompile>

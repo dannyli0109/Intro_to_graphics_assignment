@@ -12,6 +12,12 @@ GLuint ShaderProgram::GetId()
 	return program;
 }
 
+/**
+ * Shader program to load the shader from files.
+ *
+ * \param vertexFilename vertex shader file path
+ * \param fragmentFilename fragment shader file path
+ */
 ShaderProgram::ShaderProgram(std::string vertexFilename, std::string fragmentFilename)
 {
 	this->created = true;
@@ -38,6 +44,10 @@ ShaderProgram::ShaderProgram(std::string vertexFilename, std::string fragmentFil
 		glGetShaderInfoLog(vertexShader, 256, nullptr, errorLog);
 		std::cout << errorLog;
 		created = false;
+
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+		glDeleteProgram(program);
 	}
 
 	const char* fragmentSourceC = fragmentSource.c_str();
@@ -52,6 +62,10 @@ ShaderProgram::ShaderProgram(std::string vertexFilename, std::string fragmentFil
 		glGetShaderInfoLog(fragmentShader, 256, nullptr, errorLog);
 		std::cout << errorLog;
 		created = false;
+
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+		glDeleteProgram(program);
 	}
 
 
@@ -66,6 +80,10 @@ ShaderProgram::ShaderProgram(std::string vertexFilename, std::string fragmentFil
 		glGetProgramInfoLog(program, 256, nullptr, errorLog);
 		std::cout << errorLog;
 		created = false;
+
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+		glDeleteProgram(program);
 	}
 
 	if (created)
@@ -74,6 +92,10 @@ ShaderProgram::ShaderProgram(std::string vertexFilename, std::string fragmentFil
 	}
 }
 
+/**
+ * Use the shader to this one.
+ * 
+ */
 void ShaderProgram::UseShader()
 {
 	glUseProgram(program);

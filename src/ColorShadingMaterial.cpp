@@ -1,5 +1,11 @@
 #include "ColorShadingMaterial.h"
 #include "ShaderProgram.h"
+
+/**
+ * The shader will only output the color value without doing anything else.
+ *
+ * \param color Color to shade
+ */
 ColorShadingMaterial::ColorShadingMaterial(glm::vec3 color)
 {
 	this->name = "Color Shading Material";

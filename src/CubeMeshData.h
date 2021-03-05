@@ -5,6 +5,10 @@ class CubeMeshData :
 	public MeshData
 {
 public:
+	/**
+	* Cube mesh data.
+	*
+	*/
 	CubeMeshData();
 };
 

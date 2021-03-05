@@ -77,6 +77,13 @@ glm::mat4& Transform::GetTransformMatrix()
     return transform;
 }
 
+Transform* Transform::Create(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale)
+{
+    return new Transform(
+        position, rotation, scale 
+    );
+}
+
 
 void Transform::Update(float deltaTime)
 {
@@ -96,21 +103,13 @@ void Transform::Update(float deltaTime)
         globalTransform = localTransform;
     }
 
-    //for (ShaderProgram* shader : shaders)
-    //{
-    //    shader->SetUniform("modelMatrix", globalTransform);
-    //}
 }
 
 void Transform::DrawGui()
 {
-
-    if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        ImGui::DragFloat3("Position", &position.x, 0.1f);
-        ImGui::DragFloat3("Rotation", &rotation.x);
-        ImGui::DragFloat3("Scale", &scale.x, 0.01);
-    }
+    ImGui::DragFloat3("Position", &position.x, 0.1f);
+    ImGui::DragFloat3("Rotation", &rotation.x);
+    ImGui::DragFloat3("Scale", &scale.x, 0.01);
 }
 
 void Transform::OnDraw()

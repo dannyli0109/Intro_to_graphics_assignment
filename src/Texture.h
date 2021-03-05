@@ -5,6 +5,11 @@
 class Texture
 {
 public:
+	/**
+	 * Load texture from an image file.
+	 * 
+	 * \param filename for the image texture
+	 */
 	Texture(std::string filename);
 	~Texture();
 	int GetWidth() { return width; }

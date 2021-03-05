@@ -10,6 +10,13 @@ class ShaderProgram;
 class Transform : public Component
 {
 public:
+	/**
+	 * Transform component, defines position, rotation and scale for the object.
+	 *
+	 * \param position
+	 * \param rotation in euler angle
+	 * \param scale
+	 */
 	Transform(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
 	virtual ~Transform() {};
 	Transform(const Transform& other) = delete;
@@ -28,6 +35,7 @@ public:
 	void RotateZ(float deg);
 	glm::mat4& GetTransformMatrix();
 
+	static Transform* Create(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
 
 private:
 	glm::vec3 position;

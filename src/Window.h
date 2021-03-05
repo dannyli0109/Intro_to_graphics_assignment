@@ -4,6 +4,13 @@
 class Window
 {
 public:
+	/**
+	 * Window class the encapsulate the glfw api.
+	 * 
+	 * \param width width of the window
+	 * \param height height of the window
+	 * \param name name of the window
+	 */
 	Window(int width, int height, std::string name);
 	Window(const Window& other) = delete;
 	Window& operator=(const Window& other) = delete;

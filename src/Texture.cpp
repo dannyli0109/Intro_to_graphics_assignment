@@ -2,6 +2,11 @@
 #include "stb_image.h"
 #include "Texture.h"
 
+/**
+ * Load texture from an image file.
+ *
+ * \param filename for the image texture
+ */
 Texture::Texture(std::string filename)
 {
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &channels, 0);

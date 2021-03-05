@@ -1,5 +1,9 @@
 #include "QuadMeshData.h"
 
+/**
+* Quad mesh, mainly use for storing the frame buffer to a quad texture.
+*
+*/
 QuadMeshData::QuadMeshData()
 {
 	std::vector<Vertex> vertices = {

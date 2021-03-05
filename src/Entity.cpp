@@ -1,6 +1,9 @@
 #include "Entity.h"
 #include "ShaderProgram.h"
 
+/**
+ * Entity class, represents an object in the scene.
+ */
 Entity::Entity(std::string name, const std::vector<Component*>& components, const std::vector<Entity*>& children)
 {
 	this->name = name;
@@ -31,6 +34,11 @@ Entity::~Entity()
 	}
 }
 
+/**
+ * Entity will update it's component first, then update it's children.
+ *
+ * \param deltaTime
+ */
 void Entity::Update(float deltaTime)
 {
 	for (Component* component : components)
@@ -66,6 +74,29 @@ void Entity::Draw()
 	for (Entity* child : children)
 	{
 		child->Draw();
+	}
+}
+
+void Entity::LateUpdate()
+{
+	components.erase(
+		std::remove_if(
+			components.begin(), 
+			components.end(), 
+			[](Component* component) { 
+				if (component->ShouldDelete())
+				{
+					delete component;
+					return true;
+				}
+				return false;
+			}
+		), components.end()
+	);
+
+	for (Entity* child : children)
+	{
+		child->LateUpdate();
 	}
 }
 
@@ -114,9 +145,29 @@ std::string Entity::GetName()
 void Entity::DrawGui()
 {
 
-	for (Component* component : components)
+	for (int i = 0; i < components.size(); i++)
 	{
-		component->DrawGui();
-		ImGui::Separator();
+		Component* component = components[i];
+		//std::string remove = "Remove###";
+		//remove += i;
+		//if (ImGui::Button(remove.c_str()))
+		//{
+		//	std::cout << "delete clicked" << std::endl;
+		//	component->Delete();
+		//}
+		//ImGui::SameLine();
+		bool tree = ImGui::TreeNodeEx(component->GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen);
+		if (tree)
+		{
+			component->DrawGui();
+			ImGui::Separator();
+			ImGui::TreePop();
+		}
 	}
+
+	//ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
+	//if (ImGui::Button("Add Component", ImVec2(-1.0f, 0.0f))) {
+	//	std::cout << "clicked" << std::endl;
+	//}
+	//ImGui::PopItemWidth();
 }

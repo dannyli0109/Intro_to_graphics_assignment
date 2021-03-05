@@ -5,21 +5,26 @@
 #include "ShaderProgram.h"
 #include "Camera.h"
 #include "Entity.h"
-#include "Transform.h"
-#include "PointLight.h"
 #include "Texture.h"
 #include "GUI.h"
+#include "FrameBuffer.h"
+
+// Components
+#include "Transform.h"
+#include "PointLight.h"
 #include "PhongShadingMaterial.h"
 #include "PhongFlatShadingMaterial.h"
 #include "ColorShadingMaterial.h"
 #include "AmbientLight.h"
-#include "FrameBuffer.h"
+#include "MeshContainer.h"
+
+// Mesh data
 #include "CubeMeshData.h"
 #include "ObjMeshData.h"
-#include "MeshContainer.h"
 #include "QuadMeshData.h"
 
 #include <string>
+#include <functional>
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
@@ -30,9 +35,6 @@ class ProgramManager
 {
 public:
 	Window* window = nullptr;
-	/*ShaderProgram* phongShader = nullptr;
-	ShaderProgram* phongFlatShader = nullptr;
-	ShaderProgram* colorShader = nullptr;*/
 	Camera* camera = nullptr;
 	FrameBuffer* frameBuffer = nullptr;
 	ShaderProgram* outlineShader = nullptr;
@@ -49,9 +51,9 @@ public:
 private:
 	void InitGUI();
 	void Update();
-	void UpdateGUI();
 	void Draw();
 	void DrawGUI();
+	void LateUpdate();
 	void DestroyGUI();
 };
 

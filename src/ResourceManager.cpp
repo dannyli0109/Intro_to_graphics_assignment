@@ -36,6 +36,13 @@ void ResourceManager::AddShader(std::string id, ShaderProgram* shader)
 	shader->SetName(id);
 }
 
+void ResourceManager::AddComponent(std::string id, void* creator)
+{
+	int index = components.size();
+	components.push_back(creator);
+	componentIds[id] = index;
+}
+
 Texture* ResourceManager::GetTexture(std::string id)
 {
 	int index = textureIds[id];
@@ -54,6 +61,12 @@ ShaderProgram* ResourceManager::GetShader(std::string id)
 	return GetShader(index);
 }
 
+void* ResourceManager::GetComponent(std::string id)
+{
+	 int index = componentIds[id];
+	 return GetComponent(index);
+}
+
 Texture* ResourceManager::GetTexture(int index)
 {
 	if (index < 0 || index > textures.size() - 1) return nullptr;
@@ -70,6 +83,12 @@ ShaderProgram* ResourceManager::GetShader(int index)
 {
 	if (index < 0 || index > shaders.size() - 1) return nullptr;
 	return shaders[index];
+}
+
+void* ResourceManager::GetComponent(int index)
+{
+	if (index < 0 || index > components.size() - 1) return nullptr;
+	return components[index];
 }
 
 int ResourceManager::GetTextureIndex(std::string id)

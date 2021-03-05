@@ -1,6 +1,17 @@
 #include "PhongShadingMaterial.h"
 #include "ShaderProgram.h"
 
+/**
+ * Phong shading material does phong lighting using diffuse, normal and specular map.
+ *
+ * \param ka represents the ambient reflectivity
+ * \param kd represents the diffuse reflectivity
+ * \param ks represents the specular reflectivity
+ * \param specularPower represents the specular exponent
+ * \param diffuseId diffuse map id stored in the resource manager to look up the diffuse map
+ * \param normalId normal map id stored in the resource manager to look up the normal map
+ * \param specularId specular map id stored in the resource manager to look up the specular map
+ */
 PhongShadingMaterial::PhongShadingMaterial(
 	glm::vec3 ka, glm::vec3 kd, glm::vec3 ks, float specularPower, 
 	std::string diffuseId, std::string normalId, std::string specularId) : Material()
@@ -13,7 +24,6 @@ PhongShadingMaterial::PhongShadingMaterial(
 	this->shader->SetUniform("diffuseTexture", 0);
 	this->shader->SetUniform("normalTexture", 1);
 	this->shader->SetUniform("specularTexture", 2);
-
 
 	this->ka = ka;
 	this->kd = kd;
@@ -61,8 +71,8 @@ void PhongShadingMaterial::OnDraw()
 
 void PhongShadingMaterial::DrawGui()
 {
-	if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
-	{
+	//if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+	//{
 		ImGui::SliderFloat("Ka", &ka.x, 0.0f, 1.0f);
 		ka.y = ka.x;
 		ka.z = ka.x;
@@ -112,5 +122,12 @@ void PhongShadingMaterial::DrawGui()
 			}
 			ImGui::TreePop();
 		}
-	}
+	//}
+}
+
+PhongShadingMaterial* PhongShadingMaterial::Create(glm::vec3 ka, glm::vec3 kd, glm::vec3 ks, float specularPower, std::string diffuseId, std::string normalId, std::string specularId)
+{
+	return new PhongShadingMaterial(
+		ka, kd, ks, specularPower, diffuseId, normalId, specularId
+	);
 }

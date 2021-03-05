@@ -10,6 +10,9 @@ struct Vertex {
 	glm::vec2 uv;
 };
 
+/**
+ * Mesh data parent class.
+ */
 class MeshData
 {
 public:
